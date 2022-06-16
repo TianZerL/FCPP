@@ -21,7 +21,7 @@ FCPP is a simple and accurate FC/NES emulator in C++. FCPP is my undergraduate g
 | F1  | Quick Save   | Yes           | Yes           |
 | F2  | Quick Load   | Yes           | Yes           |
 | F3  | Reset        | Yes           | Yes           |
-| F4  | Pause\Resume | Yes           | Yes           |
+| F4  | Pause/Resume | Yes           | Yes           |
 | F5  | Rewind       | Yes           | No            |
 
 # Building
