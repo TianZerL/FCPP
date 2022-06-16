@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="165mm" height="165mm" version="1.1" viewBox="0 0 165 165" xmlns="http://www.w3.org/2000/svg">
+ <g transform="translate(-5.5062 -61.278)">
+  <rect x="5.8551" y="103.85" width="164.08" height="82.04" rx="6.9157" ry="5.8069" fill="#333" stroke-width=".17534"/>
+  <path d="m20.066 121.33v48.017a8 8 45 0 0 8 8h120.93a8 8 135 0 0 8-8v-13.682a8 8 45 0 0-8-8h-57.441a8 8 45 0 1-8-8v-18.336a8 8 45 0 0-8-8h-47.487a8 8 135 0 0-8 8z" fill="#fff" stroke-width=".2375"/>
+ </g>
+ <g transform="translate(-24.027 -61.278)" fill="#4d4d4d">
+  <g stroke-width=".288">
+   <circle cx="158.42" cy="161.95" r="6.9474" style="paint-order:normal"/>
+   <rect transform="rotate(90.247)" x="136.26" y="-66.371" width="31.678" height="10.361" style="paint-order:normal"/>
+   <rect x="44.859" y="147.13" width="31.678" height="10.361" style="paint-order:normal"/>
+   <circle cx="132.92" cy="161.95" r="6.9474" style="paint-order:normal"/>
+  </g>
+  <rect x="89.476" y="162.35" width="10" height="4" stroke-width=".30426" style="paint-order:normal"/>
+  <rect x="103.6" y="162.35" width="10" height="4" stroke-width=".30426" style="paint-order:normal"/>
+ </g>
+ <g font-family="'Cascadia Code'" font-style="italic" font-weight="bold">
+  <text transform="scale(.26458)" fill="#ffffff" font-size="96px" style="line-height:0.95;shape-inside:url(#rect38789);white-space:pre" xml:space="preserve"/>
+  <text x="116.78786" y="141.06921" font-size="25.4px" stroke-width=".26458" style="line-height:0.95" xml:space="preserve"><tspan stroke-width=".26458"/></text>
+  <text x="82.859024" y="74.232483" fill="#ffffff" font-size="28.222px" stroke-width=".26458" style="line-height:0.95" xml:space="preserve"><tspan x="82.859024" y="74.232483" fill="#ffffff" font-size="28.222px" stroke-width=".26458">FCPP</tspan></text>
+ </g>
+</svg>

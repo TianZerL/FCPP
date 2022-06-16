@@ -1,0 +1,6 @@
+if(FCPP_BUILD_C_BINDING)
+    add_subdirectory(c) 
+endif()
+if(FCPP_BUILD_PYTHON_BINDING)
+    add_subdirectory(python)
+endif()

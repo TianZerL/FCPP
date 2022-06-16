@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>388</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string notr="true">QFCPP</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="label_roms">
+      <property name="text">
+       <string notr="true">Roms</string>
+      </property>
+      <property name="buddy">
+       <cstring>list_view_roms</cstring>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QListView" name="list_view_roms">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::NoEditTriggers</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>388</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="action_open"/>
+    <addaction name="separator"/>
+    <addaction name="action_settings"/>
+    <addaction name="separator"/>
+    <addaction name="action_exit"/>
+   </widget>
+   <widget class="QMenu" name="menuGame">
+    <property name="title">
+     <string>Game</string>
+    </property>
+    <addaction name="action_play"/>
+    <addaction name="action_stop"/>
+    <addaction name="action_pause"/>
+    <addaction name="action_quick_save"/>
+    <addaction name="action_quick_load"/>
+    <addaction name="action_rewind"/>
+    <addaction name="action_reset"/>
+    <addaction name="separator"/>
+    <addaction name="action_save_state"/>
+    <addaction name="action_load_state"/>
+    <addaction name="action_auto_resume"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="action_about"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuGame"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="tool_bar">
+   <property name="windowTitle">
+    <string notr="true"/>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="action_play"/>
+   <addaction name="action_stop"/>
+   <addaction name="action_pause"/>
+   <addaction name="action_rewind"/>
+   <addaction name="separator"/>
+   <addaction name="action_open"/>
+   <addaction name="action_remove"/>
+   <addaction name="action_clear"/>
+   <addaction name="action_refresh"/>
+   <addaction name="separator"/>
+   <addaction name="action_settings"/>
+  </widget>
+  <action name="action_open">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="action_refresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+  </action>
+  <action name="action_play">
+   <property name="text">
+    <string>Play</string>
+   </property>
+  </action>
+  <action name="action_stop">
+   <property name="text">
+    <string>Stop</string>
+   </property>
+  </action>
+  <action name="action_settings">
+   <property name="text">
+    <string>Settings</string>
+   </property>
+  </action>
+  <action name="action_exit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="action_remove">
+   <property name="text">
+    <string>Remove</string>
+   </property>
+  </action>
+  <action name="action_clear">
+   <property name="text">
+    <string>Clear</string>
+   </property>
+  </action>
+  <action name="action_pause">
+   <property name="text">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="action_quick_save">
+   <property name="text">
+    <string>Quick Save</string>
+   </property>
+  </action>
+  <action name="action_quick_load">
+   <property name="text">
+    <string>Quick Load</string>
+   </property>
+  </action>
+  <action name="action_rewind">
+   <property name="text">
+    <string>Rewind</string>
+   </property>
+  </action>
+  <action name="action_reset">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+  </action>
+  <action name="action_about">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="action_save_state">
+   <property name="text">
+    <string>Save State</string>
+   </property>
+  </action>
+  <action name="action_load_state">
+   <property name="text">
+    <string>Load State</string>
+   </property>
+  </action>
+  <action name="action_auto_resume">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto Resume</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>action_exit</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>179</x>
+     <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
