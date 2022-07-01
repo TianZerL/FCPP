@@ -1,5 +1,12 @@
+<div align="center">
+  <img src="./images/Logo.png">
+</div>
+
 # FCPP
 FCPP是一个使用C++实现的，简单，精确的FC/NES模拟器。FCPP是我的本科毕业设计，但我希望不止于此，将她继续做得更好。
+
+# 截图
+![截图](/images/Screenshots.png)
 
 # 默认按键映射
 | NES手柄 | 键盘  | Xbox360手柄 |
@@ -33,7 +40,7 @@ FCPP是一个使用C++实现的，简单，精确的FC/NES模拟器。FCPP是我
 - Pybind11（可选，用于编译Python绑定，可在编译时自动下载）
 ## 编译工具
 - CMake（v3.12及以上）
-- 支持C++17的编译器（至少需要支持“Nested namespace definition”特性，若需要编译TFCPP，则还需要“init-statements for if and switch”支持，编译器是否支持这些特性可参考[此处](https://en.cppreference.com/w/cpp/compiler_support)）
+- 支持C++17的编译器（至少需要支持“Nested namespace definition”特性，若需要编译TFCPP (CLI)，则还需要“init-statements for if and switch”支持，编译器是否支持这些特性可参考[此处](https://en.cppreference.com/w/cpp/compiler_support)）
 ## CMake选项
 | 选项                      | 描述                   | 默认值 |
 | ------------------------- | ---------------------- | ------ |

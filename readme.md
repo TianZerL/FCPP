@@ -1,5 +1,12 @@
+<div align="center">
+  <img src="./images/Logo.png">
+</div>
+
 # FCPP
 FCPP is a simple and accurate FC/NES emulator in C++. FCPP is my undergraduate graduation project, but I hope not limited to this and make it better.
+
+# Screenshots
+![Screenshots](/images/Screenshots.png)
 
 # Default Key Mapping
 | NES Joypad | Keyboard | Xbox Controller |
@@ -33,7 +40,7 @@ FCPP is a simple and accurate FC/NES emulator in C++. FCPP is my undergraduate g
 - Pybind11 (Optional，for Python binding，can be downloaded automatically at compile time)
 ## Tools
 - CMake (v3.12 or newer)
-- C++17 compiler (At least support "nested namespace definition" feature. If you need to build TFCPP, "init statements for if and switch" support is also needed. Whether the compiler supports these features can be found [here](https://en.cppreference.com/w/cpp/compiler_support))
+- C++17 compiler (At least support "nested namespace definition" feature. If you need to build TFCPP(CLI), "init statements for if and switch" support is also needed. Whether the compiler supports these features can be found [here](https://en.cppreference.com/w/cpp/compiler_support))
 ## CMake Option
 | Option                    | Description                    | Default |
 | ------------------------- | ------------------------------ | ------- |
