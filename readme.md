@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./images/Logo.png">
+  <img src="./images/Logo.svg">
 </div>
 
 # FCPP
