@@ -3,7 +3,7 @@
 </div>
 
 # FCPP
-FCPP is a simple and accurate FC/NES emulator in C++. FCPP is my undergraduate graduation project, but I hope not limited to this and make it better.
+FCPP is a cross-platform, simple and accurate FC/NES emulator in C++. FCPP is my undergraduate graduation project, but I hope not limited to this and make it better.
 
 # Screenshots
 ![Screenshots](/images/Screenshots.png)
