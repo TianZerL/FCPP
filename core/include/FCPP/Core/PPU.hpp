@@ -1,6 +1,7 @@
 #ifndef FCPP_CORE_PPU_HPP
 #define FCPP_CORE_PPU_HPP
 
+#include <cstdint>
 #include <memory>
 
 #include "FCPP/Core/Interface/FrameBuffer.hpp"

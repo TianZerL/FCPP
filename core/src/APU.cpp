@@ -127,7 +127,7 @@ namespace fcpp::core::detail
     public:
         void set(std::uint8_t v) noexcept;
         void reload() noexcept;
-        void step(Timer& timer) noexcept;
+        template<std::uint16_t carry> void step(Timer& timer) noexcept;
         template<typename Accessor> void access(Accessor& accessor) noexcept;
     private:
         std::uint8_t divider = 0;
@@ -148,14 +148,23 @@ namespace fcpp::core::detail
     {
         reloadFlag = true;
     }
+    template<std::uint16_t carry>
     inline void Sweep::step(Timer& timer) noexcept
     {   // reference https://wiki.nesdev.org/w/index.php?title=APU_Sweep#Updating%20the%20period
-        if (divider == 0 && enableFlag && !((timer.period < 8) || (timer.period > 0x07ff)))
-        {
-            std::uint16_t delta = timer.period >> shiftCount;
-            if (negateFlag) timer.period -= delta;
-            else timer.period += delta;
-        }
+        std::uint16_t delta = timer.period >> shiftCount;
+        // Pulse1 adds the one's complement (-C-1)
+        // Pulse2 adds the two's complement (-C)
+        if (negateFlag) delta = ~delta + carry;
+
+        std::uint16_t targetPeriod = timer.period + delta;
+        // The target period is the sum of the current period and the change amount, clamped to zero if this sum is negative.
+        if (targetPeriod & 0x8000) targetPeriod = 0;
+        
+        // If the sweep unit is disabled including because the shift count is zero,
+        // the pulse channel's period is never updated, but muting logic still applies.
+        bool mute = (timer.period < 8) || (targetPeriod > 0x07ff);
+
+        if (divider == 0 && enableFlag && shiftCount != 0 && !mute) timer.period = targetPeriod;
 
         if (divider == 0 || reloadFlag)
         {
@@ -284,7 +293,7 @@ namespace fcpp::core::detail
     public:
         std::uint8_t output() const noexcept;
         template<int idx> void set(std::uint8_t v) noexcept;
-        template<typename Unit> void step() noexcept;
+        template<typename Unit, int... idx> void step() noexcept;
         template<typename Accessor> void access(Accessor& accessor) noexcept;
     private:
         std::uint8_t dutyCycle = 0;
@@ -336,9 +345,13 @@ namespace fcpp::core::detail
     {
         lengthCounter.step();
     }
-    template<> inline void Pulse::step<Sweep>() noexcept
+    template<> inline void Pulse::step<Sweep, 1>() noexcept
     {
-        sweep.step(timer);
+        sweep.step<0>(timer); // Pulse1, carry is 0
+    }
+    template<> inline void Pulse::step<Sweep, 2>() noexcept
+    {
+        sweep.step<1>(timer); // Pulse2, carry is 1
     }
     template<typename Accessor>
     inline void Pulse::access(Accessor& accessor) noexcept
@@ -718,8 +731,8 @@ namespace fcpp::core::detail
     }
     template<> inline void APUImpl::step<Sweep>() noexcept
     {
-        pulse1.step<Sweep>();
-        pulse2.step<Sweep>();
+        pulse1.step<Sweep, 1>();
+        pulse2.step<Sweep, 2>();
     }
     template<> inline void APUImpl::step<APUImpl::FrameCounter>() noexcept
     {   // reference https://wiki.nesdev.org/w/index.php?title=APU_Frame_Counter

@@ -1,6 +1,7 @@
 #ifndef FCPP_CORE_CARTRIDGE_HPP
 #define FCPP_CORE_CARTRIDGE_HPP
 
+#include <cstdint>
 #include <memory>
 
 #include <FCPPExport.hpp>

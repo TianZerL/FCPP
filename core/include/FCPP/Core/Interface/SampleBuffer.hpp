@@ -1,8 +1,6 @@
 #ifndef FCPP_CORE_INTERFACE_SAMPLE_BUFFER_HPP
 #define FCPP_CORE_INTERFACE_SAMPLE_BUFFER_HPP
 
-#include <cstdint>
-
 namespace fcpp::core
 {
     class SampleBuffer;

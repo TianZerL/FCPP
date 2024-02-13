@@ -14,21 +14,21 @@ struct TestIO :
     void setPixel(int x, int y, std::uint32_t color) noexcept override {}
     void completedSignal() noexcept override
     {
-        if ((count = (count + 1) & 0xff) == 1)
+        frames += 1000.0;
+        if ((count = (count + 1) & 0xff) == 0)
         {
             std::chrono::duration<double, std::milli> time = std::chrono::steady_clock::now() - frameStartTime;
             std::cerr << frames / time.count() << "fps\r";
-            frames = 1000.0;
+            frames = 0.0;
             frameStartTime = std::chrono::steady_clock::now();
         }
-        else frames += 1000.0;
     }
     const std::uint32_t* getPaletteTable() noexcept override
     {
         return nullptr;
     }
 
-    void sendSample(const double sample) noexcept override {}
+    void sendSample(double sample) noexcept override {}
     int getSampleRate() noexcept override
     {
         return 44100;
