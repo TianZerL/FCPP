@@ -127,6 +127,7 @@ namespace fcpp::core::detail
     public:
         void set(std::uint8_t v) noexcept;
         void reload() noexcept;
+        bool mute(const Timer& timer) const noexcept;
         template<std::uint16_t carry> void step(Timer& timer) noexcept;
         template<typename Accessor> void access(Accessor& accessor) noexcept;
     private:
@@ -148,12 +149,17 @@ namespace fcpp::core::detail
     {
         reloadFlag = true;
     }
+    inline bool Sweep::mute(const Timer& timer) const noexcept
+    {
+        std::uint16_t delta = timer.period >> shiftCount;
+        return (timer.period < 8) || (!negateFlag && (timer.period + delta > 0x07ff));
+    }
     template<std::uint16_t carry>
     inline void Sweep::step(Timer& timer) noexcept
     {   // reference https://wiki.nesdev.org/w/index.php?title=APU_Sweep#Updating%20the%20period
         std::uint16_t delta = timer.period >> shiftCount;
-        // Pulse1 adds the one's complement (-C-1)
-        // Pulse2 adds the two's complement (-C)
+        // Pulse1 adds the one's complement (-C-1): carry == 0
+        // Pulse2 adds the two's complement (-C): carry == 1
         if (negateFlag) delta = ~delta + carry;
 
         std::uint16_t targetPeriod = timer.period + delta;
@@ -308,7 +314,7 @@ namespace fcpp::core::detail
     };
     inline std::uint8_t Pulse::output() const noexcept
     {//muting if frequency higher than 13kHz
-        return (!enabled || (timer.period < 8) || (timer.period > 0x07ff) ||
+        return (!enabled || sweep.mute(timer) ||
             lengthCounter.zero() || !((dutyCycle >> offset) & 1)) ?
             0 : envelope.getVolume();
     }
