@@ -24,7 +24,7 @@ static void listEngine()
     {
         std::cout << fcpp::io::manager::name(i) << " (" << i << ")\n";
         auto info = fcpp::io::manager::info(i);
-        for(int j = 0; j < info->getRenderDriverCount(); j++)
+        for (int j = 0; j < info->getRenderDriverCount(); j++)
             std::cout << "  " << info->getRenderDriverName(j) << " (" << j << ")\n";
     }
 }
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
     }
 
     std::string fileName{};
-    if(auto pos = options.romPath.find_last_of("/\\"); pos == std::string::npos) fileName = options.romPath;
+    if (auto pos = options.romPath.find_last_of("/\\"); pos == std::string::npos) fileName = options.romPath;
     else fileName = options.romPath.substr(pos + 1);
     std::string saveName = fileName + ".sav";
 
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
     controller->setRenderDriver(options.rendererIndex);
 
     bool stopFlag = false, pauseFlag = false, resetFlag = false, saveFlag = false, loadFlag = false;
-    controller->setCloseCallback([&](){stopFlag = true; });
+    controller->setCloseCallback([&]() {stopFlag = true; });
     controller->setKeyPressCallback([&](const fcpp::io::Keyboard key)
         {
             switch (key)

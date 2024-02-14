@@ -237,7 +237,7 @@ namespace fcpp::io::detail
     {
         if (SDL2ObjectCount++ == 0)
         {
-            if (SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) SDL_Log("SDL2_Init Error: %s\n", SDL_GetError());
+            if (SDL_Init(SDL_INIT_GAMECONTROLLER | SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) SDL_Log("SDL_Init Error: %s\n", SDL_GetError());
             SDL_SetHint(SDL_HINT_JOYSTICK_ALLOW_BACKGROUND_EVENTS, "1");
         }
     }
@@ -626,8 +626,8 @@ namespace fcpp::io::detail
         void fillBuffer(std::uint8_t* buffer, int len) noexcept;
         static void callback(void* data, std::uint8_t* buffer, int len) noexcept;
     private:
-        static constexpr std::size_t buffSize = 2048;
-        static constexpr std::size_t buffNum = 3;
+        static constexpr std::size_t buffSize = 512;
+        static constexpr std::size_t buffNum = 12;
         SDL_semaphore* sem = nullptr;
         SDL_AudioDeviceID devid = 0;
 

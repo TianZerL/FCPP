@@ -537,8 +537,8 @@ namespace fcpp::io::detail
         void fillBuffer(void* buffer, unsigned int len) noexcept;
         static void callback(void* buffer, unsigned int count) noexcept;
     private:
-        static constexpr std::size_t buffSize = 2048;
-        static constexpr std::size_t buffNum = 3;
+        static constexpr std::size_t buffSize = 512;
+        static constexpr std::size_t buffNum = 12;
 
         AudioStream stream{};
         std::size_t writeCount = 0, readCount = 0, writeIdx = 0, readIdx = 0;

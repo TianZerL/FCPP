@@ -496,8 +496,8 @@ namespace fcpp::io::detail
         bool onGetData(Chunk& data) noexcept override;
         void onSeek(sf::Time timeOffset) noexcept override;
     private:
-        static constexpr std::size_t buffSize = 2048;
-        static constexpr std::size_t buffNum = 3;
+        static constexpr std::size_t buffSize = 512;
+        static constexpr std::size_t buffNum = 12;
 
         std::size_t count = 0, writeIdx = 0, readIdx = 0;
         fcpp::util::Semaphore sem{ buffNum - 1 };

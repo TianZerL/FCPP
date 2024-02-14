@@ -4,9 +4,12 @@
 #include <functional>
 #include <utility>
 
-#include "FCPP/Util/FPSLimiter.hpp"
-#include "FCPP/IO/Controller.hpp"
 #include "FCPP/Core/Interface/FrameBuffer.hpp"
+
+#include "FCPP/IO/InputDevice.hpp"
+#include "FCPP/IO/PaletteTable.hpp"
+
+#include "FCPP/Util/FPSLimiter.hpp"
 
 namespace fcpp::io::detail
 {
