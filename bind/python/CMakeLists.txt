@@ -43,9 +43,8 @@ else()
 endif()
 
 install(
-    TARGETS pyfcpp EXPORT PYFCPP
-    ARCHIVE DESTINATION pyfcpp/lib
-    LIBRARY DESTINATION pyfcpp/lib
-    RUNTIME DESTINATION bin
-    PUBLIC_HEADER DESTINATION pyfcpp/include
+    TARGETS pyfcpp
+    ARCHIVE DESTINATION pyfcpp
+    LIBRARY DESTINATION pyfcpp
+    RUNTIME DESTINATION pyfcpp
 )

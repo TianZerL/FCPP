@@ -27,8 +27,7 @@ install(
     TARGETS cfcpp EXPORT CFCPP
     ARCHIVE DESTINATION cfcpp/lib
     LIBRARY DESTINATION cfcpp/lib
-    RUNTIME DESTINATION bin
-    PUBLIC_HEADER DESTINATION cfcpp/include
+    RUNTIME DESTINATION cfcpp/lib
 )
 
 install(DIRECTORY ${TOP_DIR}/bind/c/include ${CMAKE_CURRENT_BINARY_DIR}/include DESTINATION cfcpp)

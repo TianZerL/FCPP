@@ -51,12 +51,12 @@ public:
 
     void exec() noexcept;
 
-    Clock* getClock() noexcept;
-    Cartridge* getCartridge() noexcept;
-    Bus* getBus() noexcept;
+    Clock* getClock() noexcept;    
+    CPU* getCPU() noexcept;
     PPU* getPPU() noexcept;
     APU* getAPU() noexcept;
-    CPU* getCPU() noexcept;
+    Bus* getBus() noexcept;
+    Cartridge* getCartridge() noexcept;
     Joypad* getJoypad(int idx) noexcept;
 private:
     std::unique_ptr<FCData> dptr;

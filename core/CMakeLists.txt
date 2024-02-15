@@ -40,7 +40,6 @@ install(
     ARCHIVE DESTINATION fcpp/lib
     LIBRARY DESTINATION fcpp/lib
     RUNTIME DESTINATION bin
-    PUBLIC_HEADER DESTINATION fcpp/include
 )
 
 install(DIRECTORY ${TOP_DIR}/core/include ${CMAKE_CURRENT_BINARY_DIR}/include DESTINATION fcpp)

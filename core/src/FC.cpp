@@ -6,21 +6,21 @@
 struct fcpp::core::FC::FCData
 {
     Clock clock{};
-    Cartridge cartridge{};
+    CPU cpu{};
     PPU ppu{};
     APU apu{};
     Bus bus{};
-    CPU cpu{};
+    Cartridge cartridge{};
     std::unique_ptr<Joypad> joypad[2]{};
 
     void init(FC* const fc) noexcept
     {
         clock.connect(fc);
-        cartridge.connect(fc);
+        cpu.connect(fc);
         ppu.connect(fc);
         apu.connect(fc);
-        bus.connect(fc);
-        cpu.connect(fc);
+        bus.connect(fc);        
+        cartridge.connect(fc);
     }
 };
 
@@ -85,9 +85,9 @@ void fcpp::core::FC::powerOn() noexcept
 void fcpp::core::FC::reset() noexcept
 {
     dptr->clock.reset();
-    dptr->ppu.reset();
-    dptr->apu.reset();
     dptr->cpu.reset();
+    dptr->ppu.reset();
+    dptr->apu.reset();    
     powerOn();
 }
 
@@ -95,11 +95,11 @@ void fcpp::core::FC::save(Snapshot& snapshot) noexcept
 {
     snapshot.rewindWriter();
     dptr->clock.save(&snapshot);
-    dptr->cartridge.save(&snapshot);
+    dptr->cpu.save(&snapshot);
     dptr->ppu.save(&snapshot);
     dptr->apu.save(&snapshot);
-    dptr->cpu.save(&snapshot);
     dptr->bus.save(&snapshot);
+    dptr->cartridge.save(&snapshot);
 }
 void fcpp::core::FC::load(Snapshot& snapshot) noexcept
 {
@@ -107,11 +107,11 @@ void fcpp::core::FC::load(Snapshot& snapshot) noexcept
 
     snapshot.rewindReader();
     dptr->clock.load(&snapshot);
-    dptr->cartridge.load(&snapshot);
+    dptr->cpu.load(&snapshot);    
     dptr->ppu.load(&snapshot);
-    dptr->apu.load(&snapshot);
-    dptr->cpu.load(&snapshot);
+    dptr->apu.load(&snapshot);    
     dptr->bus.load(&snapshot);
+    dptr->cartridge.load(&snapshot);
 }
 
 void fcpp::core::FC::exec() noexcept
@@ -123,13 +123,9 @@ fcpp::core::Clock* fcpp::core::FC::getClock() noexcept
 {
     return &dptr->clock;
 }
-fcpp::core::Cartridge* fcpp::core::FC::getCartridge() noexcept
+fcpp::core::CPU* fcpp::core::FC::getCPU() noexcept
 {
-    return &dptr->cartridge;
-}
-fcpp::core::Bus* fcpp::core::FC::getBus() noexcept
-{
-    return &dptr->bus;
+    return &dptr->cpu;
 }
 fcpp::core::PPU* fcpp::core::FC::getPPU() noexcept
 {
@@ -139,9 +135,13 @@ fcpp::core::APU* fcpp::core::FC::getAPU() noexcept
 {
     return &dptr->apu;
 }
-fcpp::core::CPU* fcpp::core::FC::getCPU() noexcept
+fcpp::core::Bus* fcpp::core::FC::getBus() noexcept
 {
-    return &dptr->cpu;
+    return &dptr->bus;
+}
+fcpp::core::Cartridge* fcpp::core::FC::getCartridge() noexcept
+{
+    return &dptr->cartridge;
 }
 fcpp::core::Joypad* fcpp::core::FC::getJoypad(const int idx) noexcept
 {

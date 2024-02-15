@@ -626,8 +626,8 @@ namespace fcpp::io::detail
         void fillBuffer(std::uint8_t* buffer, int len) noexcept;
         static void callback(void* data, std::uint8_t* buffer, int len) noexcept;
     private:
-        static constexpr std::size_t buffSize = 512;
-        static constexpr std::size_t buffNum = 12;
+        static constexpr std::size_t buffSize = 1024;
+        static constexpr std::size_t buffNum = 6;
         SDL_semaphore* sem = nullptr;
         SDL_AudioDeviceID devid = 0;
 
