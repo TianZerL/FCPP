@@ -19,7 +19,7 @@ struct fcpp::core::FC::FCData
         cpu.connect(fc);
         ppu.connect(fc);
         apu.connect(fc);
-        bus.connect(fc);        
+        bus.connect(fc);
         cartridge.connect(fc);
     }
 };
@@ -87,7 +87,7 @@ void fcpp::core::FC::reset() noexcept
     dptr->clock.reset();
     dptr->cpu.reset();
     dptr->ppu.reset();
-    dptr->apu.reset();    
+    dptr->apu.reset();
     powerOn();
 }
 
@@ -107,9 +107,9 @@ void fcpp::core::FC::load(Snapshot& snapshot) noexcept
 
     snapshot.rewindReader();
     dptr->clock.load(&snapshot);
-    dptr->cpu.load(&snapshot);    
+    dptr->cpu.load(&snapshot);
     dptr->ppu.load(&snapshot);
-    dptr->apu.load(&snapshot);    
+    dptr->apu.load(&snapshot);
     dptr->bus.load(&snapshot);
     dptr->cartridge.load(&snapshot);
 }

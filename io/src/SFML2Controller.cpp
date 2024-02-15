@@ -621,11 +621,11 @@ void fcpp::io::SFML2Controller::setJoypadType(const int idx, const fcpp::core::J
 {
     dptr->input[idx].setJoypadType(type);
 }
-void fcpp::io::SFML2Controller::setPaletteTable(const PaletteTable & paletteTable) noexcept
+void fcpp::io::SFML2Controller::setPaletteTable(const PaletteTable& paletteTable) noexcept
 {
     dptr->video.setPaletteTable(paletteTable);
 }
-void fcpp::io::SFML2Controller::setPaletteTable(PaletteTable && paletteTable) noexcept
+void fcpp::io::SFML2Controller::setPaletteTable(PaletteTable&& paletteTable) noexcept
 {
     dptr->video.setPaletteTable(std::move(paletteTable));
 }

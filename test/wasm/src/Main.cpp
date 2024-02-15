@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop_arg([](void* data) {
-            if (!static_cast<fcpp::wasm::Emulator*>(data)->run()) emscripten_cancel_main_loop();
+        if (!static_cast<fcpp::wasm::Emulator*>(data)->run()) emscripten_cancel_main_loop();
         }, &emu, 0, 1);
 #else
     fcpp::util::FPSLimiter fpsLimiter{ 60 };

@@ -51,7 +51,7 @@ public:
 
     void exec() noexcept;
 
-    Clock* getClock() noexcept;    
+    Clock* getClock() noexcept;
     CPU* getCPU() noexcept;
     PPU* getPPU() noexcept;
     APU* getAPU() noexcept;

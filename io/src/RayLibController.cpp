@@ -684,11 +684,11 @@ void fcpp::io::RayLibController::setJoypadType(const int idx, const fcpp::core::
 {
     dptr->input[idx].setJoypadType(type);
 }
-void fcpp::io::RayLibController::setPaletteTable(const PaletteTable & paletteTable) noexcept
+void fcpp::io::RayLibController::setPaletteTable(const PaletteTable& paletteTable) noexcept
 {
     dptr->video.setPaletteTable(paletteTable);
 }
-void fcpp::io::RayLibController::setPaletteTable(PaletteTable && paletteTable) noexcept
+void fcpp::io::RayLibController::setPaletteTable(PaletteTable&& paletteTable) noexcept
 {
     dptr->video.setPaletteTable(std::move(paletteTable));
 }
