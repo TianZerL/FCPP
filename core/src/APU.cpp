@@ -1,3 +1,6 @@
+#include <array>
+#include <cstddef>
+
 #include "FCPP/Core/APU.hpp"
 #include "FCPP/Core/FC.hpp"
 
@@ -377,7 +380,7 @@ namespace fcpp::core::detail
         template<typename Unit> void step() noexcept;
         template<typename Accessor> void access(Accessor& accessor) noexcept;
     private:
-        std::uint8_t offset = 31;
+        std::uint8_t offset = 0;
 
         LinearCounter linearCounter{};
     private:
@@ -387,8 +390,9 @@ namespace fcpp::core::detail
         };
     };
     inline std::uint8_t Triangle::output() const noexcept
-    {//muting if frequency higher than 20kHz
-        return (!enabled || (timer.period < 3) || (timer.period > 0x07ff) || linearCounter.zero() || lengthCounter.zero()) ?
+    {// muting if frequency higher than 20kHz
+     // Silencing the triangle channel merely halts it. It will continue to output its last value rather than 0.
+        return (!enabled || (timer.period < 3) || (timer.period > 0x07ff)) ?
             0 : sequenceLookupTable[offset];
     }
     template<> inline void Triangle::set<0x08>(const std::uint8_t v) noexcept
@@ -409,7 +413,7 @@ namespace fcpp::core::detail
     template<> inline void Triangle::step<Timer>() noexcept
     {//The sequencer is clocked by the timer as long as both the linear counter and the length counter are nonzero.
         if (timer.step() && !linearCounter.zero() && !lengthCounter.zero())
-            offset = offset ? offset - 1 : 31;
+            offset = (offset + 1) & 0x1f;
     }
     template<> inline void Triangle::step<LengthCounter>() noexcept
     {
@@ -758,6 +762,19 @@ namespace fcpp::core::detail
         template<int idx> std::uint8_t get() noexcept;
         template<int idx> void set(std::uint8_t v) noexcept;
     private:
+        static constexpr auto pulseTable{ []() constexpr {
+            constexpr std::size_t size = 31;
+            std::array<double, size> table{ 0.0 };
+            for (std::size_t i = 1; i < size; i++) table[i] = 95.52 / (8128.0 / static_cast<double>(i) + 100.0);
+            return table;
+            }() };
+        static constexpr auto tndTable{ []() constexpr {
+            constexpr std::size_t size = 203;
+            std::array<double, size> table{ 0.0 };
+            for (std::size_t i = 1; i < size; i++) table[i] = 163.67 / (24329.0 / static_cast<double>(i) + 100.0);
+            return table;
+            }() };
+    private:
         Pulse pulse1{}, pulse2{};
         Triangle triangle{};
         Noise noise{};
@@ -777,10 +794,8 @@ namespace fcpp::core::detail
     inline double APUImpl::output() const noexcept
     { // reference https://wiki.nesdev.org/w/index.php/APU_Mixer
         return
-            0.00752 * (pulse1.output() + pulse2.output()) +
-            0.00851 * triangle.output() +
-            0.00494 * noise.output() +
-            0.00335 * dmc.output();
+            pulseTable[static_cast<std::size_t>(pulse1.output()) + static_cast<std::size_t>(pulse2.output())] +
+            tndTable[3 * static_cast<std::size_t>(triangle.output()) + 2 * static_cast<std::size_t>(noise.output()) + static_cast<std::size_t>(dmc.output())];
     }
     template<> inline void APUImpl::step<Timer>() noexcept
     {
