@@ -165,7 +165,7 @@ namespace fcpp::core::detail
         std::uint16_t targetPeriod = timer.period + delta;
         // The target period is the sum of the current period and the change amount, clamped to zero if this sum is negative.
         if (targetPeriod & 0x8000) targetPeriod = 0;
-        
+
         // If the sweep unit is disabled including because the shift count is zero,
         // the pulse channel's period is never updated, but muting logic still applies.
         bool mute = (timer.period < 8) || (targetPeriod > 0x07ff);
@@ -646,7 +646,67 @@ namespace fcpp::core::detail
 
     class APUImpl
     {
-    public:
+    private:
+        class Filters
+        {
+        private:
+            class HighPassFilter
+            {
+            public:
+                template <int f>
+                void init(const double dt) noexcept
+                {
+                    a = rc<f> / (dt + rc<f>);
+                }
+                double operator<<=(const double x) noexcept
+                {
+                    double y = a * (yp + x - xp);
+                    xp = x;
+                    yp = y;
+                    return y;
+                }
+            private:
+                double a = 1.0, xp = 0.0, yp = 0.0;
+            };
+
+            class LowPassFilter
+            {
+            public:
+                template <int f>
+                void init(const double dt) noexcept
+                {
+                    a = dt / (dt + rc<f>);
+                }
+                double operator<<=(const double x) noexcept
+                {
+                    double y = yp + a * (x - yp);
+                    yp = y;
+                    return y;
+                }
+            private:
+                double a = 1.0, yp = 0.0;
+            };
+        public:
+            void init(const int sampleRate) noexcept
+            {// reference https://www.nesdev.org/wiki/APU_Mixer
+                double dt = 1.0 / sampleRate;
+                hpf1.init<90>(dt);
+                hpf2.init<440>(dt);
+                lpf.init<14000>(dt);
+            }
+            double operator()(const double sample) noexcept
+            {
+                return lpf <<= hpf2 <<= hpf1 <<= sample;
+            }
+        private:
+            static constexpr double pi = 3.14159265358979323846;
+            template <int f> static constexpr double rc = 1.0 / (2.0 * pi * f);
+
+            HighPassFilter hpf1;
+            HighPassFilter hpf2;
+            LowPassFilter lpf;
+        };
+
         struct FrameCounter
         {
             int counter = 0;
@@ -695,6 +755,8 @@ namespace fcpp::core::detail
 
         FrameCounter frameCounter{};
         SampleTimer sampleTimer{};
+
+        Filters filters{};
 
         bool interruptFlag = false;
     private:
@@ -786,7 +848,10 @@ namespace fcpp::core::detail
     void APUImpl::setSampleBuffer(SampleBuffer* const sampleBuffer) noexcept
     {
         this->sampleBuffer = sampleBuffer;
-        sampleTimer.period = clock->getCPUFrequency() / sampleBuffer->getSampleRate() - 1.0;
+        auto sampleRate = sampleBuffer->getSampleRate();
+        auto frequency = clock->getCPUFrequency();
+        sampleTimer.period = frequency / sampleRate - 1.0;
+        filters.init(sampleRate);
     }
     template<typename Accessor>
     inline void APUImpl::access(Accessor& accessor) noexcept
@@ -815,7 +880,7 @@ namespace fcpp::core::detail
     {
         step<Timer>();
         step<FrameCounter>();
-        if (sampleTimer.step()) sampleBuffer->sendSample(output());
+        if (sampleTimer.step()) sampleBuffer->sendSample(filters(output()));
     }
     template<> inline std::uint8_t APUImpl::get<0x15>() noexcept
     {
@@ -915,7 +980,7 @@ namespace fcpp::core::detail
         else if (dmc.zeroBytesRemaining())
         {
             dmc.start();
-            if(dmc.getBuffer().empty()) dmc.load();
+            if (dmc.getBuffer().empty()) dmc.load();
         }
     }
     template<> inline void APUImpl::set<0x17>(const std::uint8_t v) noexcept
