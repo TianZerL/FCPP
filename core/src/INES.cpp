@@ -19,7 +19,7 @@ fcpp::core::INES::INES() : dptr(std::make_unique<INESData>()) {}
 fcpp::core::INES::INES(const INES& other) : dptr(std::make_unique<INESData>(*other.dptr)) {}
 fcpp::core::INES::INES(INES&&) noexcept = default;
 fcpp::core::INES::~INES() noexcept = default;
-fcpp::core::INES& fcpp::core::INES::operator=(const INES & other)
+fcpp::core::INES& fcpp::core::INES::operator=(const INES& other)
 {
     *dptr = *other.dptr;
     return *this;

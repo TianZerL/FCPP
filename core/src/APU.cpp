@@ -707,18 +707,6 @@ namespace fcpp::core::detail
             LowPassFilter lpf;
         };
 
-        struct FrameCounter
-        {
-            int counter = 0;
-            bool interruptInhibitFlag = false;
-            bool stepModeFlag = false;
-
-            std::uint8_t stepMode() const noexcept
-            {
-                return stepModeFlag ? 5 : 4;
-            }
-        };
-
         class SampleTimer
         {
         public:
@@ -744,6 +732,18 @@ namespace fcpp::core::detail
         private:
             double counter = 0.0;
             double period = 0.0;
+        };
+
+        struct FrameCounter
+        {
+            int counter = 0;
+            bool interruptInhibitFlag = false;
+            bool stepModeFlag = false;
+
+            std::uint8_t stepMode() const noexcept
+            {
+                return stepModeFlag ? 5 : 4;
+            }
         };
     private:
         double output() const noexcept;
