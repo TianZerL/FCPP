@@ -309,8 +309,6 @@ namespace fcpp::io::detail
                     { 0, 0 }, 0, WHITE);
             }
             EndDrawing();
-
-            fpsLimiter.wait();
         }
         else if (closeCallback) closeCallback();
     }
@@ -398,7 +396,11 @@ namespace fcpp::io::detail
     void RayLibVideo::completedSignal() noexcept
     {
         if (frameCompletedCallback) frameCompletedCallback();
-        else render();
+        else
+        {
+            render();
+            fpsLimiter.wait();
+        }
     }
 
     class RayLibInput : public Input

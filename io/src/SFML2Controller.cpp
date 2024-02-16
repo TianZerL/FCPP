@@ -297,8 +297,6 @@ namespace fcpp::io::detail
         texture.update(image);
         window.draw(sprite);
         window.display();
-
-        fpsLimiter.wait();
     }
     bool SFML2Video::setFullScreen(const bool enable) noexcept
     {
@@ -355,7 +353,11 @@ namespace fcpp::io::detail
     void SFML2Video::completedSignal() noexcept
     {
         if (frameCompletedCallback) frameCompletedCallback();
-        else render();
+        else
+        {
+            render();
+            fpsLimiter.wait();
+        }
     }
 
     class SFML2Input : public Input

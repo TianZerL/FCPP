@@ -360,8 +360,6 @@ namespace fcpp::io::detail
             SDL_Log("SDL_RenderCopy Error: %s\n", SDL_GetError());
 
         SDL_RenderPresent(renderer);
-
-        fpsLimiter.wait();
     }
     bool SDL2Video::setFullScreen(const bool enable) noexcept
     {
@@ -455,7 +453,11 @@ namespace fcpp::io::detail
     void SDL2Video::completedSignal() noexcept
     {
         if (frameCompletedCallback) frameCompletedCallback();
-        else render();
+        else
+        {
+            render();
+            fpsLimiter.wait();
+        }
     }
 
     class SDL2Input :
