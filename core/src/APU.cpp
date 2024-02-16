@@ -719,21 +719,31 @@ namespace fcpp::core::detail
             }
         };
 
-        struct SampleTimer
+        class SampleTimer
         {
-            double counter = 0.0;
-            double period = 0.0;
-
+        public:
             bool step() noexcept
             {
+                counter -= 1.0;
                 if (counter < 1.0)
                 {
                     counter += period;
                     return true;
                 }
-                else counter -= 1.0;
                 return false;
             }
+            void init(const double t) noexcept
+            {
+                period = t;
+                reload();
+            }
+            void reload() noexcept
+            {
+                counter = period;
+            }
+        private:
+            double counter = 0.0;
+            double period = 0.0;
         };
     private:
         double output() const noexcept;
@@ -850,7 +860,7 @@ namespace fcpp::core::detail
         this->sampleBuffer = sampleBuffer;
         auto sampleRate = sampleBuffer->getSampleRate();
         auto frequency = clock->getCPUFrequency();
-        sampleTimer.period = frequency / sampleRate - 1.0;
+        sampleTimer.init(frequency / sampleRate);
         filters.init(sampleRate);
     }
     template<typename Accessor>
@@ -873,8 +883,8 @@ namespace fcpp::core::detail
         triangle = {};
         noise = {};
         frameCounter = {};
-        sampleTimer.counter = 0.0;
         interruptFlag = false;
+        sampleTimer.reload();
     }
     inline void APUImpl::exec() noexcept
     {
