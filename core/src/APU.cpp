@@ -85,13 +85,14 @@ namespace fcpp::core::detail
     public:
         bool zero() const noexcept;
         void set(std::uint8_t v) noexcept;
-        void reset() noexcept;
+        void enable(bool v) noexcept;
         void halt(bool v) noexcept;
         void step() noexcept;
         template<typename Accessor> void access(Accessor& accessor) noexcept;
     private:
         std::uint8_t counter = 0;
         bool haltFlag = false;
+        bool enabledFlag = false;
     private:
         static constexpr std::uint8_t lengthTable[32] = {
             10,254, 20,  2, 40,  4, 80,  6, 160,  8, 60, 10, 14, 12, 26, 14,
@@ -104,11 +105,11 @@ namespace fcpp::core::detail
     }
     inline void LengthCounter::set(const std::uint8_t v) noexcept
     {
-        counter = lengthTable[v];
+        if (enabledFlag) counter = lengthTable[v];
     }
-    inline void LengthCounter::reset() noexcept
+    inline void LengthCounter::enable(const bool v) noexcept
     {
-        counter = 0;
+        if (!(enabledFlag = v)) counter = 0;
     }
     inline void LengthCounter::halt(const bool v) noexcept
     {
@@ -123,6 +124,7 @@ namespace fcpp::core::detail
     {
         accessor.access(counter);
         accessor.access(haltFlag);
+        accessor.access(enabledFlag);
     }
 
     class Sweep
@@ -271,18 +273,16 @@ namespace fcpp::core::detail
     class Channel
     {
     public:
-        bool enable(bool v) noexcept;
+        void enable(bool v) noexcept;
         LengthCounter& getLengthCounter() noexcept;
         template<typename Accessor> void access(Accessor& accessor) noexcept;
     protected:
-        bool enabled = false;
-
         Timer timer{};
         LengthCounter lengthCounter{};
     };
-    inline bool Channel::enable(const bool v) noexcept
+    inline void Channel::enable(const bool v) noexcept
     {
-        return enabled = v;
+        lengthCounter.enable(v);
     }
     inline LengthCounter& Channel::getLengthCounter() noexcept
     {
@@ -291,7 +291,6 @@ namespace fcpp::core::detail
     template<typename Accessor>
     inline void Channel::access(Accessor& accessor) noexcept
     {
-        accessor.access(enabled);
         accessor.access(timer.counter);
         accessor.access(timer.period);
         lengthCounter.access(accessor);
@@ -317,8 +316,7 @@ namespace fcpp::core::detail
     };
     inline std::uint8_t Pulse::output() const noexcept
     {//muting if frequency higher than 13kHz
-        return (!enabled || sweep.mute(timer) ||
-            lengthCounter.zero() || !((dutyCycle >> offset) & 1)) ?
+        return (sweep.mute(timer) || lengthCounter.zero() || !((dutyCycle >> offset) & 1)) ?
             0 : envelope.getVolume();
     }
     template<> inline void Pulse::set<0x00>(const std::uint8_t v) noexcept
@@ -338,7 +336,7 @@ namespace fcpp::core::detail
     template<> inline void Pulse::set<0x03>(const std::uint8_t v) noexcept
     {
         timer.period = (static_cast<std::uint16_t>(v & 7) << 8) | (timer.period & 0x00ff);
-        if (enabled) lengthCounter.set(v >> 3);
+        lengthCounter.set(v >> 3);
         envelope.start();
         offset = 7;
     }
@@ -390,10 +388,8 @@ namespace fcpp::core::detail
         };
     };
     inline std::uint8_t Triangle::output() const noexcept
-    {// muting if frequency higher than 20kHz
-     // Silencing the triangle channel merely halts it. It will continue to output its last value rather than 0.
-        return (!enabled || (timer.period < 3) || (timer.period > 0x07ff)) ?
-            0 : sequenceLookupTable[offset];
+    {// Silencing the triangle channel merely halts it. It will continue to output its last value rather than 0.
+        return sequenceLookupTable[offset];
     }
     template<> inline void Triangle::set<0x08>(const std::uint8_t v) noexcept
     {
@@ -407,12 +403,12 @@ namespace fcpp::core::detail
     template<> inline void Triangle::set<0x0b>(const std::uint8_t v) noexcept
     {
         timer.period = (static_cast<std::uint16_t>(v & 7) << 8) | (timer.period & 0x00ff);
-        if (enabled) lengthCounter.set(v >> 3);
+        lengthCounter.set(v >> 3);
         linearCounter.reload();
     }
     template<> inline void Triangle::step<Timer>() noexcept
-    {//The sequencer is clocked by the timer as long as both the linear counter and the length counter are nonzero.
-        if (timer.step() && !linearCounter.zero() && !lengthCounter.zero())
+    {// The sequencer is clocked by the timer as long as both the linear counter and the length counter are nonzero. Muting if frequency higher than 20kHz
+        if (timer.step() && !linearCounter.zero() && !lengthCounter.zero() && !((timer.period < 3) || (timer.period > 0x07ff)))
             offset = (offset + 1) & 0x1f;
     }
     template<> inline void Triangle::step<LengthCounter>() noexcept
@@ -450,7 +446,7 @@ namespace fcpp::core::detail
     };
     inline std::uint8_t Noise::output() const noexcept
     {
-        return (!enabled || (shiftRegister & 1) || lengthCounter.zero()) ? 0 : envelope.getVolume();
+        return ((shiftRegister & 1) || lengthCounter.zero()) ? 0 : envelope.getVolume();
     }
     template<> inline void Noise::set<0x0c>(const std::uint8_t v) noexcept
     {
@@ -464,7 +460,7 @@ namespace fcpp::core::detail
     }
     template<> inline void Noise::set<0x0f>(const std::uint8_t v) noexcept
     {
-        if (enabled) lengthCounter.set(v >> 3);
+        lengthCounter.set(v >> 3);
         envelope.start();
     }
     template<> inline void Noise::step<Timer>() noexcept
@@ -570,7 +566,7 @@ namespace fcpp::core::detail
     }
     inline void DMC::load() noexcept
     {
-        if (!bytesRemainingCounter || loading) return;
+        if (bytesRemainingCounter == 0 || loading) return;
         loading = true;
         unsigned int stalled = cpu->get<CPU::State::Type::DMAState>();
         if (stalled == CPU::State::DMA_STATE_DISABLE) stalled = cpu->get<CPU::State::Type::TickState>() == CPU::State::TICK_STATE_READ ? 4 : 3;
@@ -657,6 +653,8 @@ namespace fcpp::core::detail
             class HighPassFilter
             {
             public:
+                HighPassFilter() = default;
+                HighPassFilter(const double x) : xp(x) {}
                 template <int f>
                 void init(const double dt) noexcept
                 {
@@ -706,9 +704,9 @@ namespace fcpp::core::detail
             static constexpr double pi = 3.14159265358979323846;
             template <int f> static constexpr double rc = 1.0 / (2.0 * pi * f);
 
-            HighPassFilter hpf1;
-            HighPassFilter hpf2;
-            LowPassFilter lpf;
+            HighPassFilter hpf1{ tndTable[3 * 15] }; // Suppress DC offset noise
+            HighPassFilter hpf2{};
+            LowPassFilter lpf{};
         };
 
         class SampleTimer
@@ -724,9 +722,9 @@ namespace fcpp::core::detail
                 }
                 return false;
             }
-            void init(const double t) noexcept
+            void init(const double p) noexcept
             {
-                period = t;
+                period = p;
                 reload();
             }
             void reload() noexcept
@@ -995,18 +993,16 @@ namespace fcpp::core::detail
     }
     template<> inline void APUImpl::set<0x15>(const std::uint8_t v) noexcept
     {
-        if (!pulse1.enable(v & 0x01)) pulse1.getLengthCounter().reset();
-        if (!pulse2.enable(v & 0x02)) pulse2.getLengthCounter().reset();
-        if (!triangle.enable(v & 0x04)) triangle.getLengthCounter().reset();
-        if (!noise.enable(v & 0x08)) noise.getLengthCounter().reset();
-
+        pulse1.enable(v & 0x01);
+        pulse2.enable(v & 0x02);
+        triangle.enable(v & 0x04);
+        noise.enable(v & 0x08);
+        /* If the DMC bit is clear, the DMC bytes remaining will be set to 0 and the DMC will silence when it empties.
+         * If the DMC bit is set, the DMC sample will be restarted only if its bytes remaining is 0.
+         * Writing to this register clears the DMC interrupt flag. */
         dmc.clearInterrupt();
         if (!(v & 0x10)) dmc.resetBytesRemaining();
-        else if (dmc.zeroBytesRemaining())
-        {
-            dmc.start();
-            if (dmc.getBuffer().empty()) dmc.load();
-        }
+        else if (dmc.zeroBytesRemaining()) dmc.start();
     }
     template<> inline void APUImpl::set<0x17>(const std::uint8_t v) noexcept
     {
