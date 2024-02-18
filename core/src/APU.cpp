@@ -703,8 +703,8 @@ namespace fcpp::core::detail
         private:
             static constexpr double pi = 3.14159265358979323846;
             template <int f> static constexpr double rc = 1.0 / (2.0 * pi * f);
-
-            HighPassFilter hpf1{ tndTable[3 * 15] }; // Suppress DC offset noise
+            // Suppress DC offset noise. Initial triangle channel output is 15, so tndTable index is 45.
+            HighPassFilter hpf1{ tndTable[45] };
             HighPassFilter hpf2{};
             LowPassFilter lpf{};
         };
@@ -997,12 +997,17 @@ namespace fcpp::core::detail
         pulse2.enable(v & 0x02);
         triangle.enable(v & 0x04);
         noise.enable(v & 0x08);
-        /* If the DMC bit is clear, the DMC bytes remaining will be set to 0 and the DMC will silence when it empties.
+        /* Writing to this register clears the DMC interrupt flag.
+         * If the DMC bit is clear, the DMC bytes remaining will be set to 0 and the DMC will silence when it empties.
          * If the DMC bit is set, the DMC sample will be restarted only if its bytes remaining is 0.
-         * Writing to this register clears the DMC interrupt flag. */
+         * Any time the sample buffer is in an empty state and bytes remaining is not zero, load a byte to the buffer. */
         dmc.clearInterrupt();
         if (!(v & 0x10)) dmc.resetBytesRemaining();
-        else if (dmc.zeroBytesRemaining()) dmc.start();
+        else if (dmc.zeroBytesRemaining())
+        {
+            dmc.start();
+            if (dmc.getBuffer().empty()) dmc.load();
+        }
     }
     template<> inline void APUImpl::set<0x17>(const std::uint8_t v) noexcept
     {
