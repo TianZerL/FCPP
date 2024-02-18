@@ -65,12 +65,15 @@ namespace fcpp::wasm::detail
     }
     void Audio::sendSample(const double sample) noexcept
     {
-        samples[writeIdx * buffSize + count++] = static_cast<std::int16_t>(sample * 32767);
-        if (count >= buffSize)
+        if (frames < buffNum)
         {
-            count = 0;
-            writeIdx = (writeIdx < (buffNum - 1)) ? writeIdx + 1 : 0;
-            frames++;
+            samples[writeIdx * buffSize + count++] = static_cast<std::int16_t>(sample * 32767);
+            if (count >= buffSize)
+            {
+                count = 0;
+                writeIdx = (writeIdx < (buffNum - 1)) ? writeIdx + 1 : 0;
+                frames++;
+            }
         }
     }
     int Audio::getSampleRate() noexcept

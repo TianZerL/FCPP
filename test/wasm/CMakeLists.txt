@@ -18,7 +18,7 @@ target_compile_definitions(fcpp_test_wasm PRIVATE
 )
 
 if(EMSCRIPTEN)
-    set_target_properties(fcpp_test_wasm PROPERTIES SUFFIX ".html" LINK_FLAGS "--preload-file ${ROM_PATH}@rom.nes --emrun")
+    set_target_properties(fcpp_test_wasm PROPERTIES SUFFIX ".html" LINK_FLAGS "--preload-file ${ROM_PATH}@rom.nes")
 endif()
 
 install(

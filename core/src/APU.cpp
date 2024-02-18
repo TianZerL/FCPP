@@ -315,7 +315,7 @@ namespace fcpp::core::detail
         };
     };
     inline std::uint8_t Pulse::output() const noexcept
-    {//muting if frequency higher than 13kHz
+    {
         return (sweep.mute(timer) || lengthCounter.zero() || !((dutyCycle >> offset) & 1)) ?
             0 : envelope.getVolume();
     }
