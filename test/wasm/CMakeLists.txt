@@ -1,7 +1,7 @@
 project(fcpp_test_wasm VERSION 1.0.0.0 LANGUAGES CXX)
 
 if(NOT ROM_PATH)
-    set(ROM_PATH "D:/work/GraduationProject/NES/mario.nes")
+    set(ROM_PATH "D:/tmp/nova.nes")
 endif()
 
 add_executable(fcpp_test_wasm
@@ -18,7 +18,8 @@ target_compile_definitions(fcpp_test_wasm PRIVATE
 )
 
 if(EMSCRIPTEN)
-    set_target_properties(fcpp_test_wasm PROPERTIES SUFFIX ".html" LINK_FLAGS "--preload-file ${ROM_PATH}@rom.nes")
+    target_link_options(fcpp_test_wasm PRIVATE "SHELL:--preload-file ${ROM_PATH}@rom.nes")
+    set_target_properties(fcpp_test_wasm PROPERTIES SUFFIX ".html")
 endif()
 
 install(

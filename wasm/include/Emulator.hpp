@@ -18,6 +18,7 @@ public:
 
     bool load(const char* path) noexcept;
     bool run() noexcept;
+    const char* info() const noexcept;
 private:
     const std::unique_ptr<EmulatorData> dptr;
 };
