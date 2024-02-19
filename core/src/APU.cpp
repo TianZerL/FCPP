@@ -305,13 +305,13 @@ namespace fcpp::core::detail
         template<typename Accessor> void access(Accessor& accessor) noexcept;
     private:
         std::uint8_t dutyCycle = 0;
-        std::uint8_t offset = 7;
+        std::uint8_t offset = 0;
 
         Envelope envelope{};
         Sweep sweep{};
     private:
         static constexpr std::uint8_t sequenceLookupTable[4] = {
-            0b01000000, 0b01100000, 0b01111000, 0b10011111
+            0b00000010, 0b00000110, 0b00011110, 0b11111001
         };
     };
     inline std::uint8_t Pulse::output() const noexcept
@@ -322,7 +322,7 @@ namespace fcpp::core::detail
     template<> inline void Pulse::set<0x00>(const std::uint8_t v) noexcept
     {
         envelope.set(v);
-        lengthCounter.halt((v >> 5) & 1);
+        lengthCounter.halt(v & (1 << 5));
         dutyCycle = sequenceLookupTable[(v >> 6) & 3];
     }
     template<> inline void Pulse::set<0x01>(const std::uint8_t v) noexcept
@@ -338,11 +338,11 @@ namespace fcpp::core::detail
         timer.period = (static_cast<std::uint16_t>(v & 7) << 8) | (timer.period & 0x00ff);
         lengthCounter.set(v >> 3);
         envelope.start();
-        offset = 7;
+        offset = 0;
     }
     template<> inline void Pulse::step<Timer>() noexcept
     {
-        if (timer.step()) offset = offset ? (offset - 1) : 7;
+        if (timer.step()) offset = (offset + 1) & 7;
     }
     template<> inline void Pulse::step<Envelope>() noexcept
     {
@@ -393,7 +393,7 @@ namespace fcpp::core::detail
     }
     template<> inline void Triangle::set<0x08>(const std::uint8_t v) noexcept
     {
-        lengthCounter.halt((v >> 7) & 1);
+        lengthCounter.halt(v & (1 << 7));
         linearCounter.set(v);
     }
     template<> inline void Triangle::set<0x0a>(const std::uint8_t v) noexcept
@@ -409,7 +409,7 @@ namespace fcpp::core::detail
     template<> inline void Triangle::step<Timer>() noexcept
     {// The sequencer is clocked by the timer as long as both the linear counter and the length counter are nonzero. Muting if frequency higher than 20kHz
         if (timer.step() && !linearCounter.zero() && !lengthCounter.zero() && !((timer.period < 3) || (timer.period > 0x07ff)))
-            offset = (offset + 1) & 0x1f;
+            offset = (offset + 1) & 31;
     }
     template<> inline void Triangle::step<LengthCounter>() noexcept
     {
@@ -451,7 +451,7 @@ namespace fcpp::core::detail
     template<> inline void Noise::set<0x0c>(const std::uint8_t v) noexcept
     {
         envelope.set(v);
-        lengthCounter.halt((v >> 5) & 1);
+        lengthCounter.halt(v & (1 << 5));
     }
     template<> inline void Noise::set<0x0e>(const std::uint8_t v) noexcept
     {
