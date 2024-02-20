@@ -8,10 +8,7 @@ add_executable(fcpp_test_wasm
     ${TOP_DIR}/test/wasm/src/Main.cpp
 )
 
-target_link_libraries(fcpp_test_wasm PRIVATE
-    efcpp
-    fcpp_util
-)
+target_link_libraries(fcpp_test_wasm PRIVATE efcpp)
 
 target_compile_definitions(fcpp_test_wasm PRIVATE
     ROM_LOAD_PATH=$<IF:$<BOOL:${EMSCRIPTEN}>,"rom.nes","${ROM_PATH}">

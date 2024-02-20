@@ -4,8 +4,6 @@
 #include <emscripten.h>
 #endif
 
-#include "FCPP/Util/FPSLimiter.hpp"
-
 #include "Emulator.hpp"
 
 int main(int argc, char* argv[])
@@ -27,8 +25,7 @@ int main(int argc, char* argv[])
         if (!static_cast<fcpp::wasm::Emulator*>(data)->run()) emscripten_cancel_main_loop();
         }, &emu, 0, 1);
 #else
-    fcpp::util::FPSLimiter fpsLimiter{ 60 };
-    while (emu.run()) fpsLimiter.wait();
+    while (emu.run());
 #endif
     return 0;
 }

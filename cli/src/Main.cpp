@@ -71,6 +71,10 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    controller->setTitle(fileName.c_str());
+    controller->setScale(2.0f);
+    controller->setVerticalSync(true);
+
     auto info = fcpp::io::manager::info(options.engineIndex);
     options.rendererIndex = std::clamp(options.rendererIndex, 0, info->getRenderDriverCount() - 1);
     controller->setRenderDriver(options.rendererIndex);
@@ -100,9 +104,7 @@ int main(int argc, char* argv[])
                 break;
             }
         });
-
-    controller->setScale(2.0f);
-    controller->setTitle(fileName.c_str());
+   
     if (!controller->create())
     {
         std::cerr << "Failed to create IO Controller" << std::endl;

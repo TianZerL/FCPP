@@ -5,6 +5,7 @@
 #include <SDL.h>
 
 #include "FCPP/Core.hpp"
+#include "FCPP/Util/FPSLimiter.hpp"
 #include "FCPP/Util/LoopCounter.hpp"
 
 #include "Emulator.hpp"
@@ -121,7 +122,7 @@ namespace fcpp::wasm::detail
                     stateMap[id] = stateBuffer + i;
                 }
             }
-            else *stateMap[id] = 0;
+            else if (auto stateIterator = stateMap.find(id); stateIterator != stateMap.end()) *stateIterator->second = 0;
         }
     }
     inline std::uint8_t VirtualJoypad::state() const noexcept
@@ -150,8 +151,8 @@ namespace fcpp::wasm::detail
         static void callback(void* data, std::uint8_t* buffer, int len) noexcept;
     private:
         static constexpr int sampleRate = 44100;
-        static constexpr std::size_t buffSize = 512;
-        static constexpr std::size_t buffNum = 12;
+        static constexpr std::size_t buffSize = 2048;
+        static constexpr std::size_t buffNum = 4;
 
         int frames = 0;
         std::int16_t samples[buffSize * buffNum]{};
@@ -288,6 +289,7 @@ namespace fcpp::wasm::detail
         SDL_Renderer* renderer = nullptr;
         SDL_Texture* texture = nullptr;
         VirtualJoypad* virtualJoypad = nullptr;
+        fcpp::util::AdaptiveFPSLimiter fpsLimiter{ 60.0 };
     };
 
     Video::~Video() noexcept
@@ -378,6 +380,7 @@ namespace fcpp::wasm::detail
         SDL_RenderPresent(renderer);
 
         ready = false;
+        fpsLimiter.wait();     
     }
     inline bool Video::isReady() const noexcept
     {

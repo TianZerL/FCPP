@@ -19,7 +19,7 @@ public:
     struct Config
     {
         bool fullScreen = false;
-        bool vsync = false;
+        bool vsync = true;
         int sampleRate = 44100;
         int engineIdx = 0;
         int renderDriverIdx = 0;

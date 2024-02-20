@@ -36,7 +36,7 @@ protected:
     const std::uint32_t* getPaletteTable() noexcept override;
 protected:
     fcpp::io::PaletteTable paletteTable{};
-    fcpp::util::FPSLimiter fpsLimiter{ 60.0 };
+    fcpp::util::AdaptiveFPSLimiter fpsLimiter{ 60.0 };
 
     std::function<void(Keyboard)> keyPressCallback{};
     std::function<void()> frameCompletedCallback{};
