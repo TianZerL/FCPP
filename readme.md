@@ -52,9 +52,11 @@ FCPP is my undergraduate graduation project, but I hope not limited to this and 
 | FCPP_IO_WITH_RAYLIB       | Build raylib backend           | OFF     |
 | FCPP_BUILD_CLI            | Build CLI                      | ON      |
 | FCPP_BUILD_GUI            | Build GUI                      | ON      |
-| FCPP_BUILD_TEST           | Build tests                    | OFF     |
+| FCPP_BUILD_TEST_CORE      | Build tests                    | OFF     |
+| FCPP_BUILD_TEST_WASM      | Build tests                    | OFF     |
 | FCPP_BUILD_C_BINDING      | Build C binding                | OFF     |
 | FCPP_BUILD_PYTHON_BINDING | Build Python binding           | OFF     |
+| FCPP_BUILD_WASM           | Build libefcpp for wasm        | OFF     |
 | FCPP_LTO                  | Enable Link time optimization  | OFF     |
 ## Examples
 ### Windows (MSVC)
