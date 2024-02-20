@@ -3,7 +3,8 @@
 </div>
 
 # FCPP
-FCPP is a cross-platform, simple and accurate FC/NES emulator in C++. FCPP is my undergraduate graduation project, but I hope not limited to this and make it better.
+FCPP is a cross-platform, simple and accurate FC/NES emulator in C++.
+FCPP is my undergraduate graduation project, but I hope not limited to this and make it better.
 
 # Screenshots
 ![Screenshots](/images/Screenshots.png)
@@ -39,8 +40,8 @@ FCPP is a cross-platform, simple and accurate FC/NES emulator in C++. FCPP is my
 - Qt5 or Qt6 (Optional，for GUI)
 - Pybind11 (Optional，for Python binding，can be downloaded automatically at compile time)
 ## Tools
-- CMake (v3.12 or newer)
-- C++17 compiler (At least support "nested namespace definition" feature. If you need to build TFCPP(CLI), "init statements for if and switch" support is also needed. Whether the compiler supports these features can be found [here](https://en.cppreference.com/w/cpp/compiler_support))
+- CMake (v3.13 or newer)
+- C++17 compiler
 ## CMake Option
 | Option                    | Description                    | Default |
 | ------------------------- | ------------------------------ | ------- |
@@ -71,11 +72,23 @@ cd FCPP && mkdir build && cd build
 # Do cmake
 cmake ..
 # Building
-make -j8
+make
 # Run binary
 ./bin/qfcpp
 # Install (Optional)
 make install
+```
+### WASM (Emscripten)
+No extra dependency is required, just download emsdk and build it:
+```shell
+# Enter the FCPP root directory and prepare to build
+cd FCPP && mkdir build_wasm && cd build_wasm
+# Do cmake
+emcmake cmake .. -DFCPP_EMSCRIPTEN_PRESET=ON -DROM_PATH="/path/to/your/rom/file"
+# Building
+emmake make
+# launch a http server to run it on your browser
+emrun ./bin/fcpp_test_wasm.html
 ```
 ### Mac
 Not tested, should work, similar to Linux

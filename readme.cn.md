@@ -3,7 +3,8 @@
 </div>
 
 # FCPP
-FCPP是一个使用C++实现的，跨平台的、简单而精确的FC/NES模拟器。FCPP是我的本科毕业设计，但我希望不止于此，而是继续做得更好。
+FCPP是一个使用C++实现的，跨平台的、简单而精确的FC/NES模拟器。
+FCPP是我的本科毕业设计，但我希望不止于此，而是继续做得更好。
 
 # 截图
 ![截图](/images/Screenshots.png)
@@ -39,8 +40,8 @@ FCPP是一个使用C++实现的，跨平台的、简单而精确的FC/NES模拟�
 - Qt5或者Qt6（可选，用于编译GUI）
 - Pybind11（可选，用于编译Python绑定，可在编译时自动下载）
 ## 编译工具
-- CMake（v3.12及以上）
-- 支持C++17的编译器（至少需要支持“Nested namespace definition”特性，若需要编译TFCPP (CLI)，则还需要“init-statements for if and switch”支持，编译器是否支持这些特性可参考[此处](https://en.cppreference.com/w/cpp/compiler_support)）
+- CMake（v3.13及以上）
+- 支持C++17的编译器
 ## CMake选项
 | 选项                      | 描述                   | 默认值 |
 | ------------------------- | ---------------------- | ------ |
@@ -65,18 +66,30 @@ FCPP是一个使用C++实现的，跨平台的、简单而精确的FC/NES模拟�
 以KUbuntu21.10使用Qt5编译默认CMake配置为例：
 
 ```shell
-#安装Qt5和SDL2
+# 安装Qt5和SDL2
 sudo apt-get install qtbase5-dev qtbase5-dev-tools libsdl2-dev
-#进入FCPP根目录，准备构建
+# 进入FCPP根目录，准备构建
 cd FCPP && mkdir build && cd build
-#执行cmake
+# 执行cmake
 cmake ..
-#构建
-make -j8
-#执行二进制文件
+# 构建
+make
+# 执行二进制文件
 ./bin/qfcpp
-#安装（可选）
+# 安装（可选）
 make install
+```
+### WASM (Emscripten)
+使用Emscripten编译不需要额外依赖项，下载emsdk编译即可
+```shell
+# 进入FCPP根目录，准备构建
+cd FCPP && mkdir build_wasm && cd build_wasm
+# 执行cmake
+emcmake cmake .. -DFCPP_EMSCRIPTEN_PRESET=ON -DROM_PATH="/rom/文件/路径"
+# 构建
+emmake make
+# 开启一个http服务器以在浏览器上运行
+emrun ./bin/fcpp_test_wasm.html
 ```
 ### Mac
 未测试，理论可行，和Linux类似
