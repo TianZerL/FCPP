@@ -8,7 +8,10 @@ target_include_directories(efcpp PUBLIC
     $<BUILD_INTERFACE:${TOP_DIR}/wasm/include>
 )
 
-target_link_libraries(efcpp PRIVATE fcpp)
+target_link_libraries(efcpp PRIVATE
+    fcpp
+    fcpp_util
+)
 
 target_compile_definitions(efcpp PUBLIC
     EFCPP_VERSION_STR="${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"

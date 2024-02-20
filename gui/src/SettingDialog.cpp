@@ -160,6 +160,7 @@ void SettingDialog::on_push_button_rom_folders_add_clicked()
         auto paths = fileDialog.selectedFiles();
         gConfig.gui.romFolders.append(paths);
         romFoldersModel.setStringList(gConfig.gui.romFolders);
+        emit refresh();
     }
 }
 void SettingDialog::on_push_button_rom_folders_remove_clicked()

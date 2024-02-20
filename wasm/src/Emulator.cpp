@@ -5,6 +5,7 @@
 #include <SDL.h>
 
 #include "FCPP/Core.hpp"
+#include "FCPP/Util/LoopCounter.hpp"
 
 #include "Emulator.hpp"
 
@@ -154,7 +155,8 @@ namespace fcpp::wasm::detail
 
         int frames = 0;
         std::int16_t samples[buffSize * buffNum]{};
-        std::size_t count = 0, writeIdx = 0, readIdx = 0;
+        std::size_t count = 0;
+        fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
         SDL_AudioDeviceID devid = 0;
     };
 
@@ -199,8 +201,8 @@ namespace fcpp::wasm::detail
             if (count >= buffSize)
             {
                 count = 0;
-                writeIdx = (writeIdx < (buffNum - 1)) ? writeIdx + 1 : 0;
-                frames++;
+                ++writeIdx;
+                ++frames;
             }
         }
     }
@@ -213,8 +215,8 @@ namespace fcpp::wasm::detail
         if (frames)
         {
             SDL_memcpy(buffer, samples + readIdx * buffSize, len);
-            readIdx = (readIdx < (buffNum - 1)) ? readIdx + 1 : 0;
-            frames--;
+            ++readIdx;
+            --frames;
         }
         else SDL_memset(buffer, 0, len);
     }
@@ -308,7 +310,7 @@ namespace fcpp::wasm::detail
             SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
             return;
         }
-        renderer = SDL_CreateRenderer(window, -1, 0);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
         if (renderer == nullptr)
         {
             SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());

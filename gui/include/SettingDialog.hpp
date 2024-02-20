@@ -33,6 +33,8 @@ private slots:
     void on_push_button_input_port2_configure_clicked();
     void on_push_button_input_presets_save_clicked();
     void on_push_button_input_presets_load_clicked();
+signals:
+    void refresh();
 private:
     QStringListModel romFoldersModel{};
 private:

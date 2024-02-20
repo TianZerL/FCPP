@@ -33,7 +33,7 @@ void MainWindow::init()
     ui->list_view_roms->setModel(&romsModel);
     ui->action_auto_resume->setChecked(gConfig.gui.autoResume);
     loadRomList();
-    if (romsModel.rowCount() == 0) ui->action_refresh->trigger();
+    ui->action_refresh->trigger();
 }
 void MainWindow::connect()
 {
@@ -54,13 +54,13 @@ void MainWindow::connect()
     QObject::connect(ui->action_quick_load, &QAction::triggered, &gEmulator, &Emulator::pushQuickLoad);
     QObject::connect(ui->action_rewind, &QAction::triggered, &gEmulator, &Emulator::pushRewind);
     QObject::connect(ui->action_reset, &QAction::triggered, &gEmulator, &Emulator::pushReset);
-    QObject::connect(&gEmulator, &Emulator::started, this,
+    QObject::connect(&gEmulator, &Emulator::started,
         []()
         {
             if (!gConfig.gui.autoResume) return;
             if (util::loadState(QFCPP_AUTO_SAVE_FILE)) gEmulator.pushQuickLoad();
         });
-    QObject::connect(&gEmulator, &Emulator::stopped, this,
+    QObject::connect(&gEmulator, &Emulator::stopped,
         []()
         {
             if (!gConfig.gui.autoResume) return;
@@ -78,6 +78,7 @@ void MainWindow::addRom(const QFileInfo& fileInfo)
 }
 void MainWindow::runRom(const QModelIndex& index)
 {
+    if (gEmulator.running()) gEmulator.stop();
     auto romInfo = index.data(Qt::UserRole).value<RomInfo>();
     if (QFile::exists(romInfo.path))
     {
@@ -236,6 +237,7 @@ void MainWindow::on_action_settings_triggered()
 {
     auto settingDialog = new SettingDialog(this);
     settingDialog->setAttribute(Qt::WA_DeleteOnClose);
+    QObject::connect(settingDialog, &SettingDialog::refresh, this, &MainWindow::on_action_refresh_triggered);
     settingDialog->show();
 }
 void MainWindow::on_action_about_triggered()

@@ -3,11 +3,12 @@
 
 #include <raylib.h>
 
-#include "FCPP/Util/Semaphore.hpp"
 #include "FCPP/IO/Audio.hpp"
 #include "FCPP/IO/Input.hpp"
 #include "FCPP/IO/Video.hpp"
 #include "FCPP/IO/RayLib/RayLibController.hpp"
+#include "FCPP/Util/LoopCounter.hpp"
+#include "FCPP/Util/Semaphore.hpp"
 
 namespace fcpp::io::detail
 {
@@ -543,7 +544,8 @@ namespace fcpp::io::detail
         static constexpr std::size_t buffNum = 6;
 
         AudioStream stream{};
-        std::size_t writeCount = 0, readCount = 0, writeIdx = 0, readIdx = 0;
+        std::size_t writeCount = 0, readCount = 0;
+        fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
         fcpp::util::Semaphore sem{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
 
@@ -581,7 +583,7 @@ namespace fcpp::io::detail
         if (writeCount >= buffSize)
         {
             writeCount = 0;
-            writeIdx = (writeIdx < (buffNum - 1)) ? writeIdx + 1 : 0;
+            ++writeIdx;
             sem.acquire();
         }
     }
@@ -589,7 +591,7 @@ namespace fcpp::io::detail
     {
         if (sem.value() < buffNum - 1)
         {
-            if ((readIdx == (buffNum - 1)) && (buffSize - readCount < len))
+            if ((readIdx == (buffNum - 1)) && (buffSize - readCount < len)) // Last buffer
             {
                 auto rest = buffSize - readCount;
                 std::memcpy(buffer, samples + readIdx * buffSize + readCount, rest * sizeof(std::int16_t));
@@ -599,7 +601,7 @@ namespace fcpp::io::detail
             if ((readCount += len) >= buffSize)
             {
                 readCount -= buffSize;
-                readIdx = (readIdx < (buffNum - 1)) ? readIdx + 1 : 0;
+                ++readIdx;
                 sem.release();
             }
         }

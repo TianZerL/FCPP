@@ -5,6 +5,7 @@
 #include <QKeySequence>
 
 #include "FCPP/Util/Archive.hpp"
+
 #include "Config.hpp"
 #include "Util.hpp"
 
@@ -446,13 +447,13 @@ bool util::saveState(const QString& path)
     if (gConfig.gui.lastPlay.name.isEmpty()) return false;
     fcpp::core::Snapshot state = gEmulator.getQuickSnapshot();
     std::uint64_t size = state.size();
-    if (!size) return false;
-    return fcpp::util::archive::save(path.toStdString(), gConfig.gui.lastPlay.name.toStdString(), reinterpret_cast<char*>(state.data()), size);
+    return size ? fcpp::util::archive::save(path.toStdString(), gConfig.gui.lastPlay.name.toStdString(), reinterpret_cast<char*>(state.data()), size) : false;
 }
 bool util::loadState(const QString& path)
 {
-    std::uint64_t size = 0;
+    if (gConfig.gui.lastPlay.name.isEmpty()) return false;
     fcpp::core::Snapshot state{};
+    std::uint64_t size = 0;
     if (fcpp::util::archive::load(path.toStdString(), gConfig.gui.lastPlay.name.toStdString(), reinterpret_cast<char*>(state.data()), size))
     {
         state.setSize(static_cast<std::size_t>(size));

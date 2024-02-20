@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "FCPP/Util/Tape.hpp"
+
 #include "Emulator.hpp"
 
 namespace detail

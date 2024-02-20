@@ -12,15 +12,15 @@ int main(int argc, char* argv[])
 {
     fcpp::wasm::Emulator emu{};
 
-    std::cout << "Load ROM: " << ROM_LOAD_NAME << std::endl;
-    if (!emu.load(ROM_LOAD_NAME))
+    std::cout << "Load ROM: " << ROM_LOAD_PATH << std::endl;
+    if (!emu.load(ROM_LOAD_PATH))
     {
         std::cerr << "Failed to load ROM file" << std::endl;
         return 0;
     }
 
-    std::cout << "Start!" << std::endl;
     std::cout << emu.info() << std::endl;
+    std::cout << "Start!" << std::endl;
 
 #ifdef __EMSCRIPTEN__
     emscripten_set_main_loop_arg([](void* data) {

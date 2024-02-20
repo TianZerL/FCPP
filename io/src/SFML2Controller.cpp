@@ -4,11 +4,12 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 
-#include "FCPP/Util/Semaphore.hpp"
 #include "FCPP/IO/Audio.hpp"
 #include "FCPP/IO/Input.hpp"
 #include "FCPP/IO/Video.hpp"
 #include "FCPP/IO/SFML2/SFML2Controller.hpp"
+#include "FCPP/Util/LoopCounter.hpp"
+#include "FCPP/Util/Semaphore.hpp"
 
 namespace fcpp::io::detail
 {
@@ -501,7 +502,8 @@ namespace fcpp::io::detail
         static constexpr std::size_t buffSize = 1024;
         static constexpr std::size_t buffNum = 6;
 
-        std::size_t count = 0, writeIdx = 0, readIdx = 0;
+        std::size_t count = 0;
+        fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
         fcpp::util::Semaphore sem{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
     };
@@ -520,7 +522,7 @@ namespace fcpp::io::detail
         if (count >= buffSize)
         {
             count = 0;
-            writeIdx = (writeIdx < (buffNum - 1)) ? writeIdx + 1 : 0;
+            ++writeIdx;
             sem.acquire();
         }
     }
@@ -530,12 +532,12 @@ namespace fcpp::io::detail
         {
             data.samples = samples + readIdx * buffSize;
             data.sampleCount = buffSize;
-            readIdx = (readIdx < (buffNum - 1)) ? readIdx + 1 : 0;
+            ++readIdx;
             sem.release();
         }
         else
         {
-            auto buffer = samples + (readIdx ? readIdx - 1 : buffNum - 1) * buffSize;
+            auto buffer = samples + readIdx.previous() * buffSize;
             std::memset(buffer, 0, buffSize * sizeof(std::int16_t));
             data.samples = buffer;
             data.sampleCount = buffSize;

@@ -19,7 +19,7 @@ public:
 
     void wait() noexcept;
     void set(double fps) noexcept;
-    double get() noexcept;
+    double get() const noexcept;
 private:
     double frameTime;
     std::chrono::steady_clock::time_point frameStartTime;
@@ -44,7 +44,7 @@ inline void fcpp::util::FPSLimiter::set(const double fps) noexcept
 {
     frameTime = 1000.0 / (fps < 1.0 ? 1.0 : (500.0 < fps ? 500.0 : fps));
 }
-inline double fcpp::util::FPSLimiter::get() noexcept
+inline double fcpp::util::FPSLimiter::get() const noexcept
 {
     return 1000.0 / frameTime;
 }

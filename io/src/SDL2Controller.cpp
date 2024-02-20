@@ -7,6 +7,7 @@
 #include "FCPP/IO/Input.hpp"
 #include "FCPP/IO/Video.hpp"
 #include "FCPP/IO/SDL2/SDL2Controller.hpp"
+#include "FCPP/Util/LoopCounter.hpp"
 
 namespace fcpp::io::detail
 {
@@ -634,7 +635,8 @@ namespace fcpp::io::detail
         SDL_AudioDeviceID devid = 0;
 
         double volume = 1.0;
-        std::size_t count = 0, writeIdx = 0, readIdx = 0;
+        std::size_t count = 0;
+        fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
     };
     SDL2Audio::~SDL2Audio() noexcept
@@ -690,7 +692,7 @@ namespace fcpp::io::detail
         if (count >= buffSize)
         {
             count = 0;
-            writeIdx = (writeIdx < (buffNum - 1)) ? writeIdx + 1 : 0;
+            ++writeIdx;
             SDL_SemWait(sem);
         }
     }
@@ -699,7 +701,7 @@ namespace fcpp::io::detail
         if (SDL_SemValue(sem) < buffNum - 1)
         {
             SDL_memcpy(buffer, samples + readIdx * buffSize, len);
-            readIdx = (readIdx < (buffNum - 1)) ? readIdx + 1 : 0;
+            ++readIdx;
             SDL_SemPost(sem);
         }
         else SDL_memset(buffer, 0, len);

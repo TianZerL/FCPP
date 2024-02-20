@@ -14,7 +14,7 @@ target_link_libraries(fcpp_test_wasm PRIVATE
 )
 
 target_compile_definitions(fcpp_test_wasm PRIVATE
-    ROM_LOAD_NAME=$<IF:$<BOOL:${EMSCRIPTEN}>,"rom.nes","${ROM_PATH}">
+    ROM_LOAD_PATH=$<IF:$<BOOL:${EMSCRIPTEN}>,"rom.nes","${ROM_PATH}">
 )
 
 if(EMSCRIPTEN)
