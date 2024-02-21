@@ -6,6 +6,8 @@
 FCPP is a cross-platform, simple and accurate FC/NES emulator in C++.
 FCPP is my undergraduate graduation project, but I hope not limited to this and make it better.
 
+FCPP can be compiled to WebAssembly, [try it in your browser!](https://tianzerl.github.io/FCPP_WASM_DEMO/)
+
 # Screenshots
 ![Screenshots](/images/Screenshots.png)
 

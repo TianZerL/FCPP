@@ -6,6 +6,8 @@
 FCPP是一个使用C++实现的，跨平台的、简单而精确的FC/NES模拟器。
 FCPP是我的本科毕业设计，但我希望不止于此，而是继续做得更好。
 
+FCPP可以编译为WebAssembly，[在浏览器中尝试!](https://tianzerl.github.io/FCPP_WASM_DEMO/)
+
 # 截图
 ![截图](/images/Screenshots.png)
 
@@ -52,8 +54,8 @@ FCPP是我的本科毕业设计，但我希望不止于此，而是继续做得�
 | FCPP_IO_WITH_RAYLIB       | 编译raylib后端         | OFF    |
 | FCPP_BUILD_CLI            | 编译CLI                | ON     |
 | FCPP_BUILD_GUI            | 编译GUI                | ON     |
-| FCPP_BUILD_TEST_CORE      | 编译libfcpp测试程序     | OFF    |
-| FCPP_BUILD_TEST_WASM      | 编译WASM测试demo        | OFF    |
+| FCPP_BUILD_TEST_CORE      | 编译libfcpp测试程序    | OFF    |
+| FCPP_BUILD_TEST_WASM      | 编译WASM测试demo       | OFF    |
 | FCPP_BUILD_C_BINDING      | 编译C语言绑定          | OFF    |
 | FCPP_BUILD_PYTHON_BINDING | 编译Python绑定         | OFF    |
 | FCPP_BUILD_WASM           | 编译wasm相关库         | OFF    |
