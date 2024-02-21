@@ -380,7 +380,7 @@ namespace fcpp::wasm::detail
         SDL_RenderPresent(renderer);
 
         ready = false;
-        fpsLimiter.wait();     
+        fpsLimiter.wait();
     }
     inline bool Video::isReady() const noexcept
     {
@@ -440,11 +440,11 @@ fcpp::wasm::Emulator::~Emulator() noexcept
     SDL_Quit();
 }
 
-bool fcpp::wasm::Emulator::load(const char* const path) noexcept
+bool fcpp::wasm::Emulator::load(const std::string path) noexcept
 {
-    if (dptr->fc.insertCartridge(path))
+    if (dptr->fc.insertCartridge(path.c_str()))
     {
-        dptr->fc.powerOn();
+        dptr->fc.reset();
         return true;
     }
     return false;
@@ -457,9 +457,9 @@ bool fcpp::wasm::Emulator::run() noexcept
     return !dptr->video.isStop();
 }
 
-const char* fcpp::wasm::Emulator::info() const noexcept
+std::string fcpp::wasm::Emulator::info() noexcept
 {
-    const char* info =
+    return
         "Version:\n"
         "FCPP: " FCPP_VERSION_STR "\n"
         "EFCPP: " EFCPP_VERSION_STR "\n"
@@ -467,5 +467,4 @@ const char* fcpp::wasm::Emulator::info() const noexcept
         "A(A) B(B) Select(Z) Start(X)\n"
         "Up(Up) Down(Down) Left(Left) Right(Right)\n"
         "F1(Toggle virtual joypad)";
-    return info;
 }

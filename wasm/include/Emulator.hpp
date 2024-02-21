@@ -2,6 +2,7 @@
 #define FCPP_WASM_EMULATOR_HPP
 
 #include <memory>
+#include <string>
 
 namespace fcpp::wasm
 {
@@ -16,9 +17,10 @@ public:
     Emulator();
     ~Emulator() noexcept;
 
-    bool load(const char* path) noexcept;
+    bool load(std::string path) noexcept;
     bool run() noexcept;
-    const char* info() const noexcept;
+
+    static std::string info() noexcept;
 private:
     const std::unique_ptr<EmulatorData> dptr;
 };

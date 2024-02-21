@@ -15,8 +15,13 @@ target_compile_definitions(fcpp_test_wasm PRIVATE
 )
 
 if(EMSCRIPTEN)
-    target_link_options(fcpp_test_wasm PRIVATE "SHELL:--preload-file ${ROM_PATH}@rom.nes")
-    set_target_properties(fcpp_test_wasm PROPERTIES SUFFIX ".html")
+    if(FCPP_BUILD_TEST_WASM_EMBIND)
+        target_link_options(fcpp_test_wasm PRIVATE -lembind)
+        target_compile_definitions(fcpp_test_wasm PRIVATE BUILD_EMBIND)
+    else()
+        target_link_options(fcpp_test_wasm PRIVATE "SHELL:--preload-file ${ROM_PATH}@rom.nes")
+        set_target_properties(fcpp_test_wasm PROPERTIES SUFFIX ".html")
+    endif()
 endif()
 
 install(
