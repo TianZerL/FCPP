@@ -245,7 +245,7 @@ namespace fcpp::io::detail
 
         bool vsync = false;
         int width = 256, height = 240;
-        unsigned int windowsMode = 0;
+        unsigned int windowMode = 0;
         std::string title{ "FCPP RayLib Renderer" };
         Color frameBuffer[256 * 240]{};
     };
@@ -262,9 +262,9 @@ namespace fcpp::io::detail
     {
         if (!IsWindowReady())
         {
-            if (windowsMode)
+            if (windowMode)
             {
-                SetConfigFlags(windowsMode);
+                SetConfigFlags(windowMode);
                 InitWindow(0, 0, title.c_str());
             }
             else
@@ -315,7 +315,7 @@ namespace fcpp::io::detail
     }
     bool RayLibVideo::setFullScreen(const bool enable) noexcept
     {
-        windowsMode = enable ? FLAG_FULLSCREEN_MODE : 0;
+        windowMode = enable ? FLAG_FULLSCREEN_MODE : 0;
         if (IsWindowReady())
         {
             if (enable && !IsWindowFullscreen())
@@ -335,7 +335,7 @@ namespace fcpp::io::detail
     }
     bool RayLibVideo::setBorderless(const bool enable) noexcept
     {
-        windowsMode = enable ? FLAG_WINDOW_UNDECORATED : 0;
+        windowMode = enable ? FLAG_WINDOW_UNDECORATED : 0;
         if (IsWindowReady())
         {
             if (enable && !IsWindowState(FLAG_WINDOW_UNDECORATED))

@@ -286,7 +286,7 @@ namespace fcpp::io::detail
         bool vsync = false;
         int width = 256, height = 240;
         int renderDriverIdx = -1;
-        std::uint32_t windowsMode = 0;
+        std::uint32_t windowMode = 0;
         std::string title{ "FCPP SDL2 Renderer" };
         std::uint32_t frameBuffer[256 * 240]{};
     };
@@ -301,7 +301,7 @@ namespace fcpp::io::detail
         if (window == nullptr)
         {
             window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | windowsMode);
+                width, height, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE | windowMode);
             if (window == nullptr)
             {
                 SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
@@ -364,14 +364,14 @@ namespace fcpp::io::detail
     }
     bool SDL2Video::setFullScreen(const bool enable) noexcept
     {
-        windowsMode = enable ? SDL_WINDOW_FULLSCREEN : 0;
+        windowMode = enable ? SDL_WINDOW_FULLSCREEN : 0;
         return window != nullptr ? (SDL_ShowCursor(enable ? SDL_DISABLE : SDL_ENABLE),
-            SDL_SetWindowFullscreen(window, windowsMode) == 0) : true;
+            SDL_SetWindowFullscreen(window, windowMode) == 0) : true;
     }
     bool SDL2Video::setBorderless(const bool enable) noexcept
     {
-        windowsMode = enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
-        return window != nullptr ? SDL_SetWindowFullscreen(window, windowsMode) == 0 : true;
+        windowMode = enable ? SDL_WINDOW_FULLSCREEN_DESKTOP : 0;
+        return window != nullptr ? SDL_SetWindowFullscreen(window, windowMode) == 0 : true;
     }
     bool SDL2Video::setVerticalSync(const bool enable) noexcept
     {
