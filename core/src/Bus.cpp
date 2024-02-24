@@ -5,7 +5,7 @@
 
 namespace fcpp::core::detail
 {
-    inline std::uint16_t nameTableAddress(const std::uint16_t addr, const MirrorType mirrorType) noexcept
+    inline static std::uint16_t nameTableAddress(const std::uint16_t addr, const MirrorType mirrorType) noexcept
     {
         switch (mirrorType)
         {
@@ -64,7 +64,7 @@ void fcpp::core::Bus::reset(const std::uint8_t v) noexcept
 }
 
 template<>
-std::uint8_t fcpp::core::Bus::read<fcpp::core::CPU>(std::uint16_t addr) noexcept
+FCPP_EXPORT std::uint8_t fcpp::core::Bus::read<fcpp::core::CPU>(std::uint16_t addr) noexcept
 {
     if (addr < 0x2000) return dptr->cpuOpenBusData = dptr->ram[addr & 0x07ff];
     else if (addr < 0x4000)
@@ -106,7 +106,7 @@ std::uint8_t fcpp::core::Bus::read<fcpp::core::CPU>(std::uint16_t addr) noexcept
     else return dptr->cpuOpenBusData;
 }
 template<>
-void fcpp::core::Bus::write<fcpp::core::CPU>(std::uint16_t addr, const std::uint8_t data) noexcept
+FCPP_EXPORT void fcpp::core::Bus::write<fcpp::core::CPU>(std::uint16_t addr, const std::uint8_t data) noexcept
 {
     dptr->cpuOpenBusData = data;
     if (addr < 0x2000) dptr->ram[addr & 0x07ff] = data;
@@ -212,7 +212,7 @@ void fcpp::core::Bus::write<fcpp::core::CPU>(std::uint16_t addr, const std::uint
 }
 
 template<>
-std::uint8_t fcpp::core::Bus::read<fcpp::core::PPU>(std::uint16_t addr) noexcept
+FCPP_EXPORT std::uint8_t fcpp::core::Bus::read<fcpp::core::PPU>(std::uint16_t addr) noexcept
 {
     addr &= 0x3fff;
     if (addr < 0x2000) return dptr->fc->getCartridge()->readCHR(addr);
@@ -220,10 +220,26 @@ std::uint8_t fcpp::core::Bus::read<fcpp::core::PPU>(std::uint16_t addr) noexcept
     else return dptr->pram[addr & ((addr & 0x0003) == 0x0000 ? 0x000f : 0x001f)];
 }
 template<>
-void fcpp::core::Bus::write<fcpp::core::PPU>(std::uint16_t addr, const std::uint8_t data) noexcept
+FCPP_EXPORT void fcpp::core::Bus::write<fcpp::core::PPU>(std::uint16_t addr, const std::uint8_t data) noexcept
 {
     addr &= 0x3fff;
     if (addr < 0x2000) dptr->fc->getCartridge()->writeCHR(addr, data);
     else if (addr < 0x3f00) dptr->vram[detail::nameTableAddress(addr, dptr->fc->getCartridge()->getMirrorType())] = data;
     else dptr->pram[addr & ((addr & 0x0003) == 0x0000 ? 0x000f : 0x001f)] = data;
+}
+
+template<>
+FCPP_EXPORT const std::uint8_t* fcpp::core::Bus::dump<fcpp::core::Bus::MemoryType::RAM>() const noexcept
+{
+    return dptr->ram;
+}
+template<>
+FCPP_EXPORT const std::uint8_t* fcpp::core::Bus::dump<fcpp::core::Bus::MemoryType::VRAM>() const noexcept
+{
+    return dptr->vram;
+}
+template<>
+FCPP_EXPORT const std::uint8_t* fcpp::core::Bus::dump<fcpp::core::Bus::MemoryType::PRAM>() const noexcept
+{
+    return dptr->pram;
 }

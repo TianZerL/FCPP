@@ -1,5 +1,6 @@
 #include <cstring>
 #include <string>
+#include <utility>
 
 #include <raylib.h>
 
@@ -718,19 +719,19 @@ void fcpp::io::RayLibController::bind(const int idx, const int standardButtonIdx
 }
 void fcpp::io::RayLibController::setKeyPressCallback(std::function<void(Keyboard)> callback) noexcept
 {
-    dptr->video.setKeyPressCallback(callback);
+    dptr->video.setKeyPressCallback(std::move(callback));
 }
 void fcpp::io::RayLibController::setFrameCompleteCallback(std::function<void()> callback) noexcept
 {
-    dptr->video.setFrameCompleteCallback(callback);
+    dptr->video.setFrameCompleteCallback(std::move(callback));
 }
 void fcpp::io::RayLibController::setRenderCallback(std::function<void()> callback) noexcept
 {
-    dptr->video.setRenderCallback(callback);
+    dptr->video.setRenderCallback(std::move(callback));
 }
 void fcpp::io::RayLibController::setCloseCallback(std::function<void()> callback) noexcept
 {
-    dptr->video.setCloseCallback(callback);
+    dptr->video.setCloseCallback(std::move(callback));
 }
 
 int fcpp::io::RayLibController::Info::getRenderDriverCount() noexcept

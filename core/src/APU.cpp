@@ -760,19 +760,6 @@ namespace fcpp::core::detail
         template<int idx> std::uint8_t get() noexcept;
         template<int idx> void set(std::uint8_t v) noexcept;
     private:
-        static constexpr auto pulseTable{ []() constexpr {
-            constexpr std::size_t size = 31;
-            std::array<double, size> table{ 0.0 };
-            for (std::size_t i = 1; i < size; i++) table[i] = 95.52 / (8128.0 / static_cast<double>(i) + 100.0);
-            return table;
-            }() };
-        static constexpr auto tndTable{ []() constexpr {
-            constexpr std::size_t size = 203;
-            std::array<double, size> table{ 0.0 };
-            for (std::size_t i = 1; i < size; i++) table[i] = 163.67 / (24329.0 / static_cast<double>(i) + 100.0);
-            return table;
-            }() };
-    private:
         Pulse pulse1{}, pulse2{};
         Triangle triangle{};
         Noise noise{};
@@ -788,6 +775,19 @@ namespace fcpp::core::detail
         Clock* clock = nullptr;
         CPU* cpu = nullptr;
         SampleBuffer* sampleBuffer = nullptr;
+    private:
+        static constexpr auto pulseTable{ []() constexpr {
+            constexpr std::size_t size = 31;
+            std::array<double, size> table{ 0.0 };
+            for (std::size_t i = 1; i < size; i++) table[i] = 95.52 / (8128.0 / static_cast<double>(i) + 100.0);
+            return table;
+            }() };
+        static constexpr auto tndTable{ []() constexpr {
+            constexpr std::size_t size = 203;
+            std::array<double, size> table{ 0.0 };
+            for (std::size_t i = 1; i < size; i++) table[i] = 163.67 / (24329.0 / static_cast<double>(i) + 100.0);
+            return table;
+            }() };
     };
     inline double APUImpl::output() const noexcept
     { // reference https://wiki.nesdev.org/w/index.php/APU_Mixer

@@ -7,40 +7,324 @@
 
 namespace py = pybind11;
 
-template<typename Controller>
-void classController(const py::module_& m, const char* const name)
+class PyController : public fcpp::io::Controller
 {
-    py::class_<Controller>(m, name)
-        .def(py::init())
-        .def("create", &Controller::create)
-        .def("get_frame_buffer", &Controller::getFrameBuffer, py::return_value_policy::reference_internal)
-        .def("get_input_scanner", &Controller::getInputScanner, py::return_value_policy::reference_internal)
-        .def("get_sample_buffer", &Controller::getSampleBuffer, py::return_value_policy::reference_internal)
-        .def("render", &Controller::render)
-        .def("set_full_screen", &Controller::setFullScreen, py::arg("enable"))
-        .def("set_borderless", &Controller::setBorderless, py::arg("enable"))
-        .def("set_vertical_sync", &Controller::setVerticalSync, py::arg("enable"))
-        .def("set_render_driver", &Controller::setRenderDriver, py::arg("index"))
-        .def("set_joystick_port", &Controller::setJoystickPort, py::arg("index"), py::arg("port"))
-        .def("set_scale", &Controller::setScale, py::arg("factor"))
-        .def("set_title", &Controller::setTitle, py::arg("text"))
-        .def("set_fps_limit", &Controller::setFPSLimit, py::arg("fps"))
-        .def("set_volume", &Controller::setVolume, py::arg("volume"))
-        .def("set_sample_rate", &Controller::setSampleRate, py::arg("rate"))
-        .def("set_joypad_type", &Controller::setJoypadType, py::arg("index"), py::arg("type"))
-        .def("set_palette_table", py::overload_cast<const fcpp::io::PaletteTable&>(&Controller::setPaletteTable), py::arg("palette_table"))
-        .def("set_turbo_button_speed", &Controller::setTurboButtonSpeed, py::arg("index"), py::arg("value"))
-        .def("bind", py::overload_cast<int, int, fcpp::io::Keyboard>(&Controller::bind), py::arg("index"), py::arg("standard_button_idx"), py::arg("key"))
-        .def("bind", py::overload_cast<int, int, fcpp::io::Joystick>(&Controller::bind), py::arg("index"), py::arg("standard_button_idx"), py::arg("button"))
-        .def("set_key_press_callback", &Controller::setKeyPressCallback, py::arg("callback"))
-        .def("set_frame_complete_callback", &Controller::setFrameCompleteCallback, py::arg("callback"))
-        .def("set_render_callback", &Controller::setRenderCallback, py::arg("callback"))
-        .def("set_close_callback", &Controller::setCloseCallback, py::arg("callback"));
+public:
+    class PyInfo : public fcpp::io::Controller::Info
+    {
+    public:
+        PyInfo() = default;
+        ~PyInfo() override = default;
+        int getRenderDriverCount() noexcept override;
+        const char* getRenderDriverName(int idx) noexcept override;
+    };
+public:
+    PyController() = default;
+    ~PyController() override = default;
+
+    bool create() noexcept override;
+    fcpp::core::FrameBuffer* getFrameBuffer() noexcept override;
+    fcpp::core::InputScanner* getInputScanner(int idx) noexcept override;
+    fcpp::core::SampleBuffer* getSampleBuffer() noexcept override;
+    void render() noexcept override;
+    bool setFullScreen(bool enable) noexcept override;
+    bool setBorderless(bool enable) noexcept override;
+    bool setVerticalSync(bool enable) noexcept override;
+    bool setRenderDriver(int idx) noexcept override;
+    bool setJoystickPort(int idx, int port) noexcept override;
+    void setScale(float factor) noexcept override;
+    void setTitle(const char* text) noexcept override;
+    void setFPSLimit(double fps) noexcept override;
+    void setVolume(float volume) noexcept override;
+    void setSampleRate(int rate) noexcept override;
+    void setJoypadType(int idx, fcpp::core::JoypadType type) noexcept override;
+    void setPaletteTable(const fcpp::io::PaletteTable& paletteTable) noexcept override;
+    void setPaletteTable(fcpp::io::PaletteTable&& paletteTable) noexcept override;
+    void setTurboButtonSpeed(int idx, std::uint8_t v) noexcept override;
+    void setFrameBufferData(const std::uint8_t* data) noexcept override;
+    void getFrameBufferData(std::uint8_t* data) const noexcept override;
+    void bind(int idx, int standardButtonIdx, fcpp::io::Keyboard key) noexcept override;
+    void bind(int idx, int standardButtonIdx, fcpp::io::Joystick button) noexcept override;
+    void setKeyPressCallback(std::function<void(fcpp::io::Keyboard)> callback) noexcept override;
+    void setFrameCompleteCallback(std::function<void()> callback) noexcept override;
+    void setRenderCallback(std::function<void()> callback) noexcept override;
+    void setCloseCallback(std::function<void()> callback) noexcept override;
+};
+bool PyController::create() noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        bool,
+        Controller,
+        "create",
+        create
+    );
+}
+fcpp::core::FrameBuffer* PyController::getFrameBuffer() noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        fcpp::core::FrameBuffer*,
+        Controller,
+        "get_frame_buffer",
+        getFrameBuffer
+    );
+}
+fcpp::core::InputScanner* PyController::getInputScanner(const int idx) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        fcpp::core::InputScanner*,
+        Controller,
+        "get_input_scanner",
+        getInputScanner,
+        idx
+    );
+}
+fcpp::core::SampleBuffer* PyController::getSampleBuffer() noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        fcpp::core::SampleBuffer*,
+        Controller,
+        "get_sample_buffer",
+        getSampleBuffer
+    );
+}
+void PyController::render() noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "render",
+        render
+    );
+}
+bool PyController::setFullScreen(const bool enable) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        bool,
+        Controller,
+        "set_full_screen",
+        setFullScreen,
+        enable
+    );
+}
+bool PyController::setBorderless(const bool enable) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        bool,
+        Controller,
+        "set_borderless",
+        setBorderless,
+        enable
+    );
+}
+bool PyController::setVerticalSync(const bool enable) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        bool,
+        Controller,
+        "set_vertical_sync",
+        setVerticalSync,
+        enable
+    );
+}
+bool PyController::setRenderDriver(const int idx) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        bool,
+        Controller,
+        "set_render_driver",
+        setRenderDriver,
+        idx
+    );
+}
+bool PyController::setJoystickPort(const int idx, const int port) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        bool,
+        Controller,
+        "set_render_driver",
+        setRenderDriver,
+        idx, port
+    );
+}
+void PyController::setScale(const float factor) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_scale",
+        setScale,
+        factor
+    );
+}
+void PyController::setTitle(const char* const text) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_title",
+        setTitle,
+        text
+    );
+}
+void PyController::setFPSLimit(const double fps) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_fps_limit",
+        setFPSLimit,
+        fps
+    );
+}
+void PyController::setVolume(const float volume) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_volume",
+        setVolume,
+        volume
+    );
+}
+void PyController::setSampleRate(const int rate) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_sample_rate",
+        setSampleRate,
+        rate
+    );
+}
+void PyController::setJoypadType(const int idx, const fcpp::core::JoypadType type) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_joypad_type",
+        setJoypadType,
+        idx, type
+    );
+}
+void PyController::setPaletteTable(const fcpp::io::PaletteTable& paletteTable) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_palette_table",
+        setPaletteTable,
+        paletteTable
+    );
+}
+void PyController::setPaletteTable(fcpp::io::PaletteTable&& paletteTable) noexcept
+{
+    setPaletteTable(paletteTable);
+}
+void PyController::setTurboButtonSpeed(const int idx, const std::uint8_t v) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_turbo_button_speed",
+        setTurboButtonSpeed,
+        idx, v
+    );
+}
+void PyController::setFrameBufferData(const std::uint8_t* const data) noexcept {/*Not supported for pyfcpp*/ }
+void PyController::getFrameBufferData(std::uint8_t* const data) const noexcept {/*Not supported for pyfcpp*/ }
+void PyController::bind(const int idx, const int standardButtonIdx, const fcpp::io::Keyboard key) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "bind",
+        bind,
+        idx, standardButtonIdx, key
+    );
+}
+void PyController::bind(const int idx, const int standardButtonIdx, const fcpp::io::Joystick button) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "bind",
+        bind,
+        idx, standardButtonIdx, button
+    );
+}
+void PyController::setKeyPressCallback(const std::function<void(fcpp::io::Keyboard)> callback) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_key_press_callback",
+        setKeyPressCallback,
+        callback
+    );
+}
+void PyController::setFrameCompleteCallback(const std::function<void()> callback) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_frame_complete_callback",
+        setFrameCompleteCallback,
+        callback
+    );
+}
+void PyController::setRenderCallback(const std::function<void()> callback) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_render_callback",
+        setRenderCallback,
+        callback
+    );
+}
+void PyController::setCloseCallback(const std::function<void()> callback) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        void,
+        Controller,
+        "set_close_callback",
+        setCloseCallback,
+        callback
+    );
 }
 
-void initIOModule(const py::module_& m)
+int PyController::PyInfo::getRenderDriverCount() noexcept
 {
-    m.doc() = "fcpp io";
+    PYBIND11_OVERLOAD_PURE_NAME(
+        int,
+        Info,
+        "get_render_driver_count",
+        getRenderDriverCount
+    );
+}
+const char* PyController::PyInfo::getRenderDriverName(const int idx) noexcept
+{
+    PYBIND11_OVERLOAD_PURE_NAME(
+        const char*,
+        Info,
+        "get_render_driver_name",
+        getRenderDriverName,
+        idx
+    );
+}
+
+static void initIOManagerModule(py::module_& m)
+{
+    m.def("count", &fcpp::io::manager::count);
+    m.def("name", &fcpp::io::manager::name);
+    m.def("create", &fcpp::io::manager::create);
+    m.def("info", &fcpp::io::manager::info);
+}
+
+void initIOModule(py::module_& m)
+{
+    auto manager = m.def_submodule("manager", "fcpp io manager");
+    initIOManagerModule(manager);
 
     py::enum_<fcpp::io::Keyboard>(m, "Keyboard")
         .value("A", fcpp::io::Keyboard::A)
@@ -169,24 +453,58 @@ void initIOModule(const py::module_& m)
         .value("Axis4P", fcpp::io::Joystick::Axis4P)
         .value("Axis5P", fcpp::io::Joystick::Axis5P);
 
+    auto paletteColorGetter = 
+        [](fcpp::io::PaletteTable& object, const int idx) -> std::tuple<std::uint8_t, std::uint8_t, std::uint8_t> {
+            std::uint8_t r = 0, g = 0, b = 0;
+            object.get(idx, r, g, b);
+            return std::make_tuple(r, g, b);
+        };
     py::class_<fcpp::io::PaletteTable>(m, "PaletteTable")
         .def(py::init())
         .def("set", py::overload_cast<int, std::uint8_t, std::uint8_t, std::uint8_t>(&fcpp::io::PaletteTable::set), py::arg("index"), py::arg("r"), py::arg("g"), py::arg("b"))
         .def("set", py::overload_cast<int, std::uint32_t>(&fcpp::io::PaletteTable::set), py::arg("index"), py::arg("argb"))
-        .def("get", [](fcpp::io::PaletteTable& object, int idx) -> std::tuple<std::uint8_t, std::uint8_t, std::uint8_t>
-            {
-                std::uint8_t r = 0, g = 0, b = 0;
-                object.get(idx, r, g, b);
-                return std::make_tuple(r, g, b);
-            }, py::arg("index"))
+        .def("get", paletteColorGetter, py::arg("index"))
         .def("get", py::overload_cast<int>(&fcpp::io::PaletteTable::get), py::arg("index"))
         .def("save", &fcpp::io::PaletteTable::save, py::arg("path"))
-        .def("load", &fcpp::io::PaletteTable::load, py::arg("path"));
+        .def("load", &fcpp::io::PaletteTable::load, py::arg("path"))
+        .def("__setitem__", [](fcpp::io::PaletteTable& object, const int idx, std::tuple<std::uint8_t, std::uint8_t, std::uint8_t> rgb) {
+                std::uint8_t r = 0, g = 0, b = 0;
+                std::tie(r, g, b) = rgb;
+                object.set(idx, r, g, b);
+            })
+        .def("__getitem__", paletteColorGetter)
+        .def_readonly_static("SIZE", &fcpp::io::PaletteTable::Size);
 
-#ifdef FCPP_IO_SDL2
-    classController<fcpp::io::SDL2Controller>(m, "SDL2Controller");
-#endif
-#ifdef FCPP_IO_SFML2
-    classController<fcpp::io::SFML2Controller>(m, "SFML2Controller");
-#endif
+    auto& controller =
+        py::class_<fcpp::io::Controller, PyController>(m, "Controller")
+        .def(py::init())
+        .def("create", &fcpp::io::Controller::create)
+        .def("get_frame_buffer", &fcpp::io::Controller::getFrameBuffer, py::return_value_policy::reference_internal)
+        .def("get_input_scanner", &fcpp::io::Controller::getInputScanner, py::return_value_policy::reference_internal)
+        .def("get_sample_buffer", &fcpp::io::Controller::getSampleBuffer, py::return_value_policy::reference_internal)
+        .def("render", &fcpp::io::Controller::render)
+        .def("set_full_screen", &fcpp::io::Controller::setFullScreen)
+        .def("set_borderless", &fcpp::io::Controller::setBorderless)
+        .def("set_vertical_sync", &fcpp::io::Controller::setVerticalSync)
+        .def("set_render_driver", &fcpp::io::Controller::setRenderDriver)
+        .def("set_joystick_port", &fcpp::io::Controller::setJoystickPort)
+        .def("set_scale", &fcpp::io::Controller::setScale)
+        .def("set_title", &fcpp::io::Controller::setTitle)
+        .def("set_fps_limit", &fcpp::io::Controller::setFPSLimit)
+        .def("set_volume", &fcpp::io::Controller::setVolume)
+        .def("set_sample_rate", &fcpp::io::Controller::setSampleRate)
+        .def("set_joypad_type", &fcpp::io::Controller::setJoypadType)
+        .def("set_palette_table", py::overload_cast<const fcpp::io::PaletteTable&>(&fcpp::io::Controller::setPaletteTable))
+        .def("set_turbo_button_speed", &fcpp::io::Controller::setTurboButtonSpeed)
+        .def("bind", static_cast<void(fcpp::io::Controller::*)(int, int, fcpp::io::Keyboard)>(&fcpp::io::Controller::bind))
+        .def("bind", static_cast<void(fcpp::io::Controller::*)(int, int, fcpp::io::Joystick)>(&fcpp::io::Controller::bind))
+        .def("set_key_press_callback", &fcpp::io::Controller::setKeyPressCallback)
+        .def("set_frame_complete_callback", &fcpp::io::Controller::setFrameCompleteCallback)
+        .def("set_render_callback", &fcpp::io::Controller::setRenderCallback)
+        .def("set_close_callback", &fcpp::io::Controller::setCloseCallback);
+
+    py::class_<fcpp::io::Controller::Info, PyController::PyInfo>(controller, "Info")
+        .def(py::init())
+        .def("get_render_driver_count", &fcpp::io::Controller::Info::getRenderDriverCount)
+        .def("get_render_driver_name", &fcpp::io::Controller::Info::getRenderDriverName);
 }

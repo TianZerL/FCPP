@@ -15,7 +15,7 @@ struct TestIO :
     void completedSignal() noexcept override
     {
         frames += 1000.0;
-        if ((count = (count + 1) & 0xff) == 0)
+        if ((++count & 0xff) == 0)
         {
             std::chrono::duration<double, std::milli> time = std::chrono::steady_clock::now() - frameStartTime;
             std::cerr << frames / time.count() << "fps\r";
@@ -53,9 +53,13 @@ int main(int argc, char* argv[])
     TestIO io{};
     fcpp::core::FC fc{};
 
-    if (argc <= 1) return 0;
-
-    fc.insertCartridge(argv[1]);
+    auto path = argc > 1 ? argv[argc - 1] : TEST_ROM_LOAD_PATH;
+    std::clog << "Load: " << path << std::endl;
+    if (!fc.insertCartridge(path))
+    {
+        std::cerr << "Failed to load rom" << std::endl;
+        return 0;
+    }
 
     fc.connect(0, &io);
     fc.connect(dynamic_cast<fcpp::core::FrameBuffer*>(&io));

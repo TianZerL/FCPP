@@ -16,7 +16,7 @@
 
 namespace fcpp::core
 {
-    class FCPP_EXPORT FC;
+    class FC;
 }
 
 class fcpp::core::FC
@@ -24,40 +24,40 @@ class fcpp::core::FC
 private:
     struct FCData;
 public:
-    FC();
-    FC(FC&&) noexcept;
-    ~FC() noexcept;
+    FCPP_EXPORT FC();
+    FCPP_EXPORT FC(FC&&) noexcept;
+    FCPP_EXPORT ~FC() noexcept;
 
-    bool insertCartridge(const char* path);
-    bool insertCartridge(const INES& content);
-    bool insertCartridge(INES&& content);
+    FCPP_EXPORT bool insertCartridge(const char* path);
+    FCPP_EXPORT bool insertCartridge(const INES& content);
+    FCPP_EXPORT bool insertCartridge(INES&& content);
 
     // connect joypad to pecified index
-    void connect(int idx, InputScanner* inputScanner) noexcept;
+    FCPP_EXPORT void connect(int idx, InputScanner* inputScanner) noexcept;
     // connect frame buffer to PPU
-    void connect(FrameBuffer* frameBuffer) noexcept;
+    FCPP_EXPORT void connect(FrameBuffer* frameBuffer) noexcept;
     // connect sample buffer to APU
-    void connect(SampleBuffer* sampleBuffer) noexcept;
+    FCPP_EXPORT void connect(SampleBuffer* sampleBuffer) noexcept;
 
-    void setFrameRate(double fps) noexcept;
+    FCPP_EXPORT void setFrameRate(double fps) noexcept;
     // min 8, max 16
-    void setSpriteLimit(int limit) noexcept;
+    FCPP_EXPORT void setSpriteLimit(int limit) noexcept;
 
-    void powerOn() noexcept;
-    void reset() noexcept;
+    FCPP_EXPORT void powerOn() noexcept;
+    FCPP_EXPORT void reset() noexcept;
 
-    void save(Snapshot& snapshot) noexcept;
-    void load(Snapshot& snapshot) noexcept;
+    FCPP_EXPORT void save(Snapshot& snapshot) noexcept;
+    FCPP_EXPORT void load(Snapshot& snapshot) noexcept;
 
-    void exec() noexcept;
+    FCPP_EXPORT void exec() noexcept;
 
-    Clock* getClock() noexcept;
-    CPU* getCPU() noexcept;
-    PPU* getPPU() noexcept;
-    APU* getAPU() noexcept;
-    Bus* getBus() noexcept;
-    Cartridge* getCartridge() noexcept;
-    Joypad* getJoypad(int idx) noexcept;
+    FCPP_EXPORT Clock* getClock() noexcept;
+    FCPP_EXPORT CPU* getCPU() noexcept;
+    FCPP_EXPORT PPU* getPPU() noexcept;
+    FCPP_EXPORT APU* getAPU() noexcept;
+    FCPP_EXPORT Bus* getBus() noexcept;
+    FCPP_EXPORT Cartridge* getCartridge() noexcept;
+    FCPP_EXPORT Joypad* getJoypad(int idx) noexcept;
 private:
     std::unique_ptr<FCData> dptr;
 };

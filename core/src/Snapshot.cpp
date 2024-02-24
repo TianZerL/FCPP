@@ -81,14 +81,6 @@ std::uint8_t* fcpp::core::Snapshot::data() const noexcept
     return dptr->buffer;
 }
 
-fcpp::core::Snapshot::Writer& fcpp::core::Snapshot::getWriter() const noexcept
-{
-    return dptr->writer;
-}
-fcpp::core::Snapshot::Reader& fcpp::core::Snapshot::getReader() const noexcept
-{
-    return dptr->reader;
-}
 void fcpp::core::Snapshot::rewindWriter() noexcept
 {
     dptr->writePos = 0;
@@ -96,4 +88,13 @@ void fcpp::core::Snapshot::rewindWriter() noexcept
 void fcpp::core::Snapshot::rewindReader() noexcept
 {
     dptr->readPos = 0;
+}
+
+fcpp::core::Snapshot::Writer& fcpp::core::Snapshot::getWriter() const noexcept
+{
+    return dptr->writer;
+}
+fcpp::core::Snapshot::Reader& fcpp::core::Snapshot::getReader() const noexcept
+{
+    return dptr->reader;
 }

@@ -1,4 +1,5 @@
 #include <cstring>
+#include <utility>
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -655,19 +656,19 @@ void fcpp::io::SFML2Controller::bind(const int idx, const int standardButtonIdx,
 }
 void fcpp::io::SFML2Controller::setKeyPressCallback(std::function<void(Keyboard)> callback) noexcept
 {
-    dptr->video.setKeyPressCallback(callback);
+    dptr->video.setKeyPressCallback(std::move(callback));
 }
 void fcpp::io::SFML2Controller::setFrameCompleteCallback(std::function<void()> callback) noexcept
 {
-    dptr->video.setFrameCompleteCallback(callback);
+    dptr->video.setFrameCompleteCallback(std::move(callback));
 }
 void fcpp::io::SFML2Controller::setRenderCallback(std::function<void()> callback) noexcept
 {
-    dptr->video.setRenderCallback(callback);
+    dptr->video.setRenderCallback(std::move(callback));
 }
 void fcpp::io::SFML2Controller::setCloseCallback(std::function<void()> callback) noexcept
 {
-    dptr->video.setCloseCallback(callback);
+    dptr->video.setCloseCallback(std::move(callback));
 }
 
 int fcpp::io::SFML2Controller::Info::getRenderDriverCount() noexcept

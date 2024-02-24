@@ -17,8 +17,7 @@ endif()
 
 string(TIMESTAMP TODAY "%Y-%m-%d")
 
-option(FCPP_CORE_SHARED_LIB "fcpp core shared library support" OFF)
-option(FCPP_IO_SHARED_LIB "fcpp io shared library support" OFF)
+option(FCPP_SHARED_LIB "build to shared library" OFF)
 option(FCPP_IO_WITH_SFML2 "build fcpp io lib with sfml2" OFF)
 option(FCPP_IO_WITH_SDL2 "build fcpp io lib with sdl2" ON)
 option(FCPP_IO_WITH_RAYLIB "build fcpp io lib with raylib" OFF)
@@ -26,6 +25,7 @@ option(FCPP_BUILD_CLI "build tfcpp" ON)
 option(FCPP_BUILD_GUI "build qfcpp" ON)
 option(FCPP_BUILD_TEST_CORE "build test for core" OFF)
 option(FCPP_BUILD_TEST_WASM "build test for wasm" OFF)
+option(FCPP_BUILD_TEST_DEBUGGER "build test for debugger" OFF)
 option(FCPP_BUILD_C_BINDING "build C bingding" OFF)
 option(FCPP_BUILD_PYTHON_BINDING "build Python bingding" OFF)
 option(FCPP_BUILD_WASM "build efcpp" OFF)
@@ -33,7 +33,7 @@ option(FCPP_LTO "enable LTO" OFF)
 
 if(FCPP_EMSCRIPTEN_PRESET)
     if(NOT EMSCRIPTEN)
-        message(FATAL_ERROR "Must use Emscripten to compile efcpp")
+        message(FATAL_ERROR "Must use Emscripten")
     endif()
     set(FCPP_BUILD_WASM ON)
     set(FCPP_BUILD_TEST_WASM ON)
@@ -44,6 +44,17 @@ if(FCPP_EMSCRIPTEN_PRESET)
     set(FCPP_BUILD_GUI OFF)
     set(FCPP_BUILD_C_BINDING OFF)
     set(FCPP_BUILD_PYTHON_BINDING OFF)
+endif()
+
+if(FCPP_PYFCPP_PRESET)
+    set(FCPP_IO_WITH_SFML2 OFF)
+    set(FCPP_IO_WITH_SDL2 OFF)
+    set(FCPP_IO_WITH_RAYLIB ON)
+    set(FCPP_BUILD_PYTHON_BINDING ON)
+endif()
+
+if(FCPP_BUILD_TEST_WASM)
+    set(FCPP_BUILD_WASM ON)
 endif()
 
 if(FCPP_LTO)
@@ -62,12 +73,17 @@ endif()
 if(FCPP_IO_WITH_SFML2)
     find_package(SFML 2 COMPONENTS graphics audio window REQUIRED)
 endif()
-if(FCPP_IO_WITH_SDL2 OR (FCPP_BUILD_WASM AND NOT EMSCRIPTEN))
+if(FCPP_IO_WITH_SDL2 OR (FCPP_BUILD_WASM AND NOT EMSCRIPTEN) OR FCPP_BUILD_TEST_DEBUGGER)
     find_package(SDL2 REQUIRED)
 endif()
 if(FCPP_IO_WITH_RAYLIB)
-    find_package(raylib QUIET)
+    if(NOT FCPP_PYFCPP_PRESET) # This preset want to build pyfcpp without dependencies, so we build raylib from source
+        find_package(raylib)
+    endif()
     if (NOT raylib_FOUND)
+        if(NOT FCPP_SHARED_LIB)
+            set(CHECK_NOT_EXPORT_FCPP_IO ON) # We can't export fcpp_io if build fcpp_io as static and build raylib from source
+        endif()
         include(FetchContent)
         FetchContent_Declare(
             raylib
@@ -87,6 +103,7 @@ add_subdirectory(io)
 add_subdirectory(util)
 add_subdirectory(bind)
 add_subdirectory(test)
+add_subdirectory(tools)
 if(FCPP_BUILD_CLI)
     add_subdirectory(cli)
 endif()
@@ -96,3 +113,10 @@ endif()
 if(FCPP_BUILD_WASM)
     add_subdirectory(wasm)
 endif()
+
+install(
+    EXPORT FCPP
+    FILE FCPPConfig.cmake
+    NAMESPACE FCPP::
+    DESTINATION fcpp/cmake
+)

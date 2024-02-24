@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <memory>
 
+#include <FCPPExport.hpp>
+
 namespace fcpp::core
 {
     class Bus;
@@ -14,6 +16,11 @@ class fcpp::core::Bus
 private:
     struct BusData;
 public:
+    enum class MemoryType
+    {
+        RAM, VRAM, PRAM
+    };
+public:
     Bus();
     ~Bus() noexcept;
 
@@ -23,9 +30,12 @@ public:
     void reset(std::uint8_t v) noexcept;
 
     template<typename Accessor>
-    std::uint8_t read(std::uint16_t addr) noexcept;
+    FCPP_EXPORT std::uint8_t read(std::uint16_t addr) noexcept;
     template<typename Accessor>
-    void write(std::uint16_t addr, std::uint8_t data) noexcept;
+    FCPP_EXPORT void write(std::uint16_t addr, std::uint8_t data) noexcept;
+
+    template<MemoryType type>
+    FCPP_EXPORT const std::uint8_t* dump() const noexcept;
 private:
     const std::unique_ptr<BusData> dptr;
 };

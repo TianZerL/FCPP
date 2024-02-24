@@ -2,14 +2,7 @@ project(cfcpp VERSION 0.0.1.0 LANGUAGES CXX)
 
 add_library(cfcpp SHARED ${TOP_DIR}/bind/c/src/CFCPP.cpp)
 
-if (FCPP_CORE_SHARED_LIB)
-    target_link_libraries(cfcpp PRIVATE fcpp)
-else()
-    get_target_property(CFCPP_CORE_INCLUDE_DIRECTORIES fcpp INCLUDE_DIRECTORIES)
-    target_include_directories(cfcpp PRIVATE ${CFCPP_CORE_INCLUDE_DIRECTORIES})
-    get_target_property(CFCPP_CORE_SOURCES fcpp SOURCES)
-    target_sources(cfcpp PRIVATE ${CFCPP_CORE_SOURCES})
-endif()
+target_link_libraries(cfcpp PRIVATE fcpp)
 
 target_include_directories(cfcpp PUBLIC
     $<BUILD_INTERFACE:${TOP_DIR}/bind/c/include>

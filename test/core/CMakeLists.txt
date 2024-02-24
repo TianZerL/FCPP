@@ -6,6 +6,10 @@ add_executable(fcpp_test_core
 
 target_link_libraries(fcpp_test_core PRIVATE fcpp)
 
+target_compile_definitions(fcpp_test_core PRIVATE
+    TEST_ROM_LOAD_PATH="${TEST_ROM_PATH}"
+)
+
 install(
     TARGETS fcpp_test_core
     RUNTIME DESTINATION test/core

@@ -174,6 +174,8 @@ namespace fcpp::core::detail
         void requestIRQ(bool status) noexcept;
 
         template<CPU::State::Type type> unsigned int get() const noexcept;
+
+        CPU::Registers dump() const noexcept;
     private:
         std::uint16_t pc = 0;
         std::uint8_t a = 0, x = 0, y = 0, sp = 0;
@@ -1232,6 +1234,10 @@ namespace fcpp::core::detail
     {
         return i.dmaState;
     }
+    inline CPU::Registers CPUImpl::dump() const noexcept
+    {
+        return CPU::Registers{ pc, a, x, y, sp, p };
+    }
 }
 
 struct fcpp::core::CPU::CPUData
@@ -1308,6 +1314,11 @@ void fcpp::core::CPU::exec() noexcept
 template<fcpp::core::CPU::State::Type type> unsigned int fcpp::core::CPU::get() const noexcept
 {
     return dptr->impl.get<type>();
+}
+
+fcpp::core::CPU::Registers fcpp::core::CPU::dump() const noexcept
+{
+    return dptr->impl.dump();
 }
 
 template unsigned int fcpp::core::CPU::get<fcpp::core::CPU::State::Type::TickState>() const noexcept;

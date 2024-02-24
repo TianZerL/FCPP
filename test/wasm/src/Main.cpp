@@ -54,7 +54,7 @@ EMSCRIPTEN_BINDINGS(fcpp) {
 int main(int argc, char* argv[])
 {
     std::cout << fcpp::wasm::Emulator::info() << std::endl;
-    start(argc > 1 ? argv[argc - 1] : ROM_LOAD_PATH);
+    start(argc > 1 ? argv[argc - 1] : TEST_ROM_LOAD_PATH);
     return 0;
 }
 #endif

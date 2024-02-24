@@ -2,12 +2,15 @@
 
 namespace py = pybind11;
 
-void initCoreModule(const py::module_&);
-void initIOModule(const py::module_&);
+void initCoreModule(py::module_&);
+void initIOModule(py::module_&);
 
 PYBIND11_MODULE(pyfcpp, m)
 {
-    m.doc() = "fcpp for python";
-    initCoreModule(m.def_submodule("core"));
-    initIOModule(m.def_submodule("io"));
+    m.doc() = "A FC/NES emulator for python";
+
+    auto core = m.def_submodule("core", "fcpp core");
+    auto io = m.def_submodule("io", "fcpp io");
+    initCoreModule(core);
+    initIOModule(io);
 }

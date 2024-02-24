@@ -4,13 +4,11 @@
 #include <cstdint>
 #include <memory>
 
-#include <FCPPIOExport.hpp>
-
 #include "FCPP/IO/Controller.hpp"
 
 namespace fcpp::io
 {
-    class FCPP_IO_EXPORT RayLibController;
+    class RayLibController;
 }
 
 class fcpp::io::RayLibController : public fcpp::io::Controller

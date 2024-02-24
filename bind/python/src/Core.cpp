@@ -144,10 +144,8 @@ int PySampleBuffer::getSampleRate() noexcept
     );
 }
 
-void initCoreModule(const py::module_& m)
+void initCoreModule(py::module_& m)
 {
-    m.doc() = "fcpp core";
-
     py::enum_<fcpp::core::JoypadType>(m, "JoypadType")
         .value("Standard", fcpp::core::JoypadType::Standard);
 
@@ -173,7 +171,7 @@ void initCoreModule(const py::module_& m)
 
     py::class_<RenderFrameBuffer, fcpp::core::FrameBuffer, PyRenderFrameBuffer>(m, "RenderFrameBuffer")
         .def(py::init())
-        .def("render", &RenderFrameBuffer::render);
+        .def("render", &RenderFrameBuffer::render, "override to render frame, whitch is in an uint8 buffer(256*240*3) with BGR order");
 
     py::class_<fcpp::core::SampleBuffer, PySampleBuffer>(m, "SampleBuffer")
         .def(py::init())
@@ -197,8 +195,7 @@ void initCoreModule(const py::module_& m)
 
     py::class_<fcpp::core::INES>(m, "INES")
         .def(py::init())
-        .def("load", [](fcpp::core::INES& object, const py::buffer& buffer) -> bool
-            {
+        .def("load", [](fcpp::core::INES& object, const py::buffer& buffer) -> bool {
                 py::buffer_info info = buffer.request();
                 if (info.format != py::format_descriptor<std::uint8_t>::format() || info.ndim != 1) return false;
                 return object.load(static_cast<std::uint8_t*>(info.ptr), info.size);

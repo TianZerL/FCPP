@@ -4,13 +4,11 @@
 #include <cstdint>
 #include <memory>
 
-#include <FCPPIOExport.hpp>
-
 #include "FCPP/IO/Controller.hpp"
 
 namespace fcpp::io
 {
-    class FCPP_IO_EXPORT SDL2Controller;
+    class SDL2Controller;
 }
 
 class fcpp::io::SDL2Controller : public fcpp::io::Controller

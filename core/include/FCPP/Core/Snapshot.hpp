@@ -10,7 +10,7 @@
 
 namespace fcpp::core
 {
-    class FCPP_EXPORT Snapshot;
+    class Snapshot;
 }
 
 class fcpp::core::Snapshot
@@ -60,22 +60,23 @@ public:
         void access(Enum& data) const noexcept;
     };
 public:
-    Snapshot();
-    Snapshot(const Snapshot&) noexcept;
-    Snapshot(Snapshot&&) noexcept;
-    ~Snapshot() noexcept;
-    Snapshot& operator=(const Snapshot&) noexcept;
-    Snapshot& operator=(Snapshot&&) noexcept;
+    FCPP_EXPORT Snapshot();
+    FCPP_EXPORT Snapshot(const Snapshot&) noexcept;
+    FCPP_EXPORT Snapshot(Snapshot&&) noexcept;
+    FCPP_EXPORT ~Snapshot() noexcept;
+    FCPP_EXPORT Snapshot& operator=(const Snapshot&) noexcept;
+    FCPP_EXPORT Snapshot& operator=(Snapshot&&) noexcept;
 
-    void setSize(std::size_t len) noexcept;
-    std::size_t size() const noexcept;
-    std::size_t capacity() const noexcept;
-    std::uint8_t* data() const noexcept;
+    FCPP_EXPORT void setSize(std::size_t len) noexcept;
+    FCPP_EXPORT std::size_t size() const noexcept;
+    FCPP_EXPORT std::size_t capacity() const noexcept;
+    FCPP_EXPORT std::uint8_t* data() const noexcept;
 
+    FCPP_EXPORT void rewindWriter() noexcept;
+    FCPP_EXPORT void rewindReader() noexcept;
+public:
     Writer& getWriter() const noexcept;
     Reader& getReader() const noexcept;
-    void rewindWriter() noexcept;
-    void rewindReader() noexcept;
 private:
     std::unique_ptr<SnapshotData> dptr;
 };

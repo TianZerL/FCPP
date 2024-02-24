@@ -1,6 +1,12 @@
 project(fcpp_core VERSION 1.0.0.0 LANGUAGES CXX)
 
-set(FCPP_CORE_SRCS
+if(FCPP_SHARED_LIB)
+    add_library(fcpp SHARED)
+else()
+    add_library(fcpp STATIC)
+endif()
+
+target_sources(fcpp PRIVATE
     ${TOP_DIR}/core/src/APU.cpp
     ${TOP_DIR}/core/src/Bus.cpp
     ${TOP_DIR}/core/src/Cartridge.cpp
@@ -13,12 +19,6 @@ set(FCPP_CORE_SRCS
     ${TOP_DIR}/core/src/Snapshot.cpp
 )
 
-if(FCPP_FCPP_SHARED_LIB)
-    add_library(fcpp SHARED ${FCPP_CORE_SRCS})
-else()
-    add_library(fcpp STATIC ${FCPP_CORE_SRCS})
-endif()
-
 target_include_directories(fcpp PUBLIC
     $<BUILD_INTERFACE:${TOP_DIR}/core/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -28,6 +28,8 @@ target_include_directories(fcpp PUBLIC
 target_compile_definitions(fcpp PUBLIC
     FCPP_VERSION_STR="${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
 )
+
+set_target_properties(fcpp PROPERTIES EXPORT_NAME "Core")
 
 include(GenerateExportHeader)
 generate_export_header(fcpp
@@ -43,10 +45,3 @@ install(
 )
 
 install(DIRECTORY ${TOP_DIR}/core/include ${CMAKE_CURRENT_BINARY_DIR}/include DESTINATION fcpp)
-
-install(
-    EXPORT FCPP
-    FILE FCPPConfig.cmake
-    NAMESPACE FCPP::
-    DESTINATION fcpp/cmake
-)

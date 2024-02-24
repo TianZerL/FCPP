@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <memory>
 
+#include <FCPPExport.hpp>
+
 namespace fcpp::core
 {
     class CPU;
@@ -29,6 +31,11 @@ public:
         static constexpr unsigned int DMA_STATE_LAST_TICK = 3;
         static constexpr unsigned int DMA_STATE_DISABLE = 0;
     };
+    struct Registers
+    {
+        std::uint16_t pc;
+        std::uint8_t a, x, y, sp, p;
+    };
 private:
     struct CPUData;
 public:
@@ -48,6 +55,8 @@ public:
     void exec() noexcept;
 
     template<State::Type type> unsigned int get() const noexcept;
+
+    FCPP_EXPORT Registers dump() const noexcept;
 private:
     const std::unique_ptr<CPUData> dptr;
 };
