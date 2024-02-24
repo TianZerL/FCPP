@@ -38,28 +38,28 @@ FCPP can be compiled to WebAssembly, [try it in your browser!](https://tianzerl.
 ## Dependency
 - SDL2 (Optional，as multimedia backend)
 - SFML2 (Optional，as multimedia backend)
-- raylib (Optional，as multimedia backend，can be downloaded automatically at compile time)
+- raylib (Optional，as multimedia backend，can be downloaded automatically by CMake)
 - Qt5 or Qt6 (Optional，for GUI)
-- Pybind11 (Optional，for Python binding，can be downloaded automatically at compile time)
+- Pybind11 (Optional，for Python binding，can be downloaded automatically by CMake)
 ## Tools
 - CMake (v3.13 or newer)
 - C++17 compiler
 ## CMake Option
-| Option                    | Description                    | Default |
-| ------------------------- | ------------------------------ | ------- |
-| FCPP_CORE_SHARED_LIB      | Build libfcpp as shared lib    | OFF     |
-| FCPP_IO_SHARED_LIB        | Build libfcpp_io as shared lib | OFF     |
-| FCPP_IO_WITH_SFML2        | Build SFML2 backend            | OFF     |
-| FCPP_IO_WITH_SDL2         | Build SDL2 backend             | ON      |
-| FCPP_IO_WITH_RAYLIB       | Build raylib backend           | OFF     |
-| FCPP_BUILD_CLI            | Build CLI                      | ON      |
-| FCPP_BUILD_GUI            | Build GUI                      | ON      |
-| FCPP_BUILD_TEST_CORE      | Build test for libfcpp         | OFF     |
-| FCPP_BUILD_TEST_WASM      | Build test demo for wasm       | OFF     |
-| FCPP_BUILD_C_BINDING      | Build C binding                | OFF     |
-| FCPP_BUILD_PYTHON_BINDING | Build Python binding           | OFF     |
-| FCPP_BUILD_WASM           | Build libefcpp for wasm        | OFF     |
-| FCPP_LTO                  | Enable Link time optimization  | OFF     |
+| Option                    | Description                   | Default |
+| ------------------------- | ----------------------------- | ------- |
+| FCPP_SHARED_LIB           | Build libraries as shared lib | OFF     |
+| FCPP_IO_WITH_SFML2        | Build SFML2 backend           | OFF     |
+| FCPP_IO_WITH_SDL2         | Build SDL2 backend            | ON      |
+| FCPP_IO_WITH_RAYLIB       | Build raylib backend          | OFF     |
+| FCPP_BUILD_CLI            | Build CLI                     | ON      |
+| FCPP_BUILD_GUI            | Build GUI                     | ON      |
+| FCPP_BUILD_TEST_CORE      | Build test for libfcpp        | OFF     |
+| FCPP_BUILD_TEST_WASM      | Build test demo for wasm      | OFF     |
+| FCPP_BUILD_TEST_DEBUGGER  | Build test demo for debugger  | OFF     |
+| FCPP_BUILD_C_BINDING      | Build C binding               | OFF     |
+| FCPP_BUILD_PYTHON_BINDING | Build Python binding          | OFF     |
+| FCPP_BUILD_WASM           | Build libefcpp for wasm       | OFF     |
+| FCPP_LTO                  | Enable Link time optimization | OFF     |
 ## Examples
 ### Windows (MSVC)
 1. Adjust CMake options as needed, and generate a Visual Studio project.

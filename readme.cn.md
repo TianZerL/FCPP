@@ -38,28 +38,28 @@ FCPP可以编译为WebAssembly，[在浏览器中尝试!](https://tianzerl.githu
 ## 第三方库
 - SDL2（可选，作为多媒体后端）
 - SFML2（可选，作为多媒体后端）
-- raylib（可选，作为多媒体后端，可在编译时自动下载）
+- raylib（可选，作为多媒体后端，可由CMake自动下载）
 - Qt5或者Qt6（可选，用于编译GUI）
-- Pybind11（可选，用于编译Python绑定，可在编译时自动下载）
+- Pybind11（可选，用于编译Python绑定，可由CMake自动下载）
 ## 编译工具
 - CMake（v3.13及以上）
 - 支持C++17的编译器
 ## CMake选项
-| 选项                      | 描述                   | 默认值 |
-| ------------------------- | ---------------------- | ------ |
-| FCPP_CORE_SHARED_LIB      | 编译libfcpp为动态库    | OFF    |
-| FCPP_IO_SHARED_LIB        | 编译libfcpp_io为动态库 | OFF    |
-| FCPP_IO_WITH_SFML2        | 编译SFML2后端          | OFF    |
-| FCPP_IO_WITH_SDL2         | 编译SDL2后端           | ON     |
-| FCPP_IO_WITH_RAYLIB       | 编译raylib后端         | OFF    |
-| FCPP_BUILD_CLI            | 编译CLI                | ON     |
-| FCPP_BUILD_GUI            | 编译GUI                | ON     |
-| FCPP_BUILD_TEST_CORE      | 编译libfcpp测试程序    | OFF    |
-| FCPP_BUILD_TEST_WASM      | 编译WASM测试demo       | OFF    |
-| FCPP_BUILD_C_BINDING      | 编译C语言绑定          | OFF    |
-| FCPP_BUILD_PYTHON_BINDING | 编译Python绑定         | OFF    |
-| FCPP_BUILD_WASM           | 编译wasm相关库         | OFF    |
-| FCPP_LTO                  | 开启链接时优化         | OFF    |
+| 选项                      | 描述                 | 默认值 |
+| ------------------------- | -------------------- | ------ |
+| FCPP_SHARED_LIB           | 编译为动态库         | OFF    |
+| FCPP_IO_WITH_SFML2        | 编译SFML2后端        | OFF    |
+| FCPP_IO_WITH_SDL2         | 编译SDL2后端         | ON     |
+| FCPP_IO_WITH_RAYLIB       | 编译raylib后端       | OFF    |
+| FCPP_BUILD_CLI            | 编译CLI              | ON     |
+| FCPP_BUILD_GUI            | 编译GUI              | ON     |
+| FCPP_BUILD_TEST_CORE      | 编译libfcpp测试程序  | OFF    |
+| FCPP_BUILD_TEST_WASM      | 编译WASM测试demo     | OFF    |
+| FCPP_BUILD_TEST_DEBUGGER  | 编译Debugger测试demo | OFF    |
+| FCPP_BUILD_C_BINDING      | 编译C语言绑定        | OFF    |
+| FCPP_BUILD_PYTHON_BINDING | 编译Python绑定       | OFF    |
+| FCPP_BUILD_WASM           | 编译wasm相关库       | OFF    |
+| FCPP_LTO                  | 开启链接时优化       | OFF    |
 ## 构建示例
 ### Windows（MSVC）
 1. 根据需要调整CMake选项，并使用CMake生成Visual Studio项目。
