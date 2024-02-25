@@ -21,6 +21,8 @@ target_compile_definitions(fcpp_io PUBLIC
     FCPP_IO_VERSION_STR="${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
 )
 
+fcpp_check_disable_flags(fcpp_io)
+
 if(FCPP_IO_WITH_SFML2 OR FCPP_IO_WITH_SDL2 OR FCPP_IO_WITH_RAYLIB)
     target_include_directories(fcpp_io PUBLIC
         $<BUILD_INTERFACE:${TOP_DIR}/core/include>

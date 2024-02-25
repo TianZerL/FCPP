@@ -29,6 +29,8 @@ target_compile_definitions(fcpp PUBLIC
     FCPP_VERSION_STR="${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}"
 )
 
+fcpp_check_disable_flags(fcpp)
+
 set_target_properties(fcpp PROPERTIES EXPORT_NAME "Core")
 
 include(GenerateExportHeader)

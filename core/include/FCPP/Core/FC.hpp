@@ -32,7 +32,7 @@ public:
     FCPP_EXPORT bool insertCartridge(const INES& content);
     FCPP_EXPORT bool insertCartridge(INES&& content);
 
-    // connect joypad to pecified index
+    // connect joypad to specified index
     FCPP_EXPORT void connect(int idx, InputScanner* inputScanner) noexcept;
     // connect frame buffer to PPU
     FCPP_EXPORT void connect(FrameBuffer* frameBuffer) noexcept;
