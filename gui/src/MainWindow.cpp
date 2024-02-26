@@ -91,6 +91,15 @@ void MainWindow::runRom(const QModelIndex& index)
         romsModel.removeRow(index.row());
     }
 }
+void MainWindow::runRom(const QString& name)
+{
+    auto items = romsModel.findItems(name);
+    if (!items.isEmpty())
+    {
+        auto index = romsModel.indexFromItem(items.first());
+        runRom(index);
+    }
+}
 void MainWindow::scanRoms(const QString& path)
 {
     QDir dir{ path };
@@ -148,16 +157,19 @@ void MainWindow::closeEvent(QCloseEvent* const e)
 }
 void MainWindow::dragEnterEvent(QDragEnterEvent* const e)
 {
-    e->acceptProposedAction();
+    if (e->mimeData()->hasUrls()) e->acceptProposedAction();
 }
 void MainWindow::dropEvent(QDropEvent* const e)
 {
-    for (auto&& url : e->mimeData()->urls())
+    QFileInfo fileInfo{};
+    auto urls = e->mimeData()->urls();
+    for (auto&& url : urls)
     {
-        const QFileInfo fileInfo{ url.toLocalFile() };
+        fileInfo.setFile(url.toLocalFile());
         if (fileInfo.isDir()) scanRoms(fileInfo.absoluteFilePath());
         else addRom(fileInfo);
     }
+    if (urls.size() == 1 && !fileInfo.isDir()) runRom(fileInfo.fileName());
     e->acceptProposedAction();
 }
 
@@ -174,12 +186,7 @@ void MainWindow::on_action_open_triggered()
         {
             auto fileInfo = QFileInfo{ urls.first().toLocalFile() };
             addRom(fileInfo);
-            auto items = romsModel.findItems(fileInfo.fileName());
-            if (!items.isEmpty())
-            {
-                auto index = romsModel.indexFromItem(items.first());
-                runRom(index);
-            }
+            runRom(fileInfo.fileName());
         }
         else for (auto&& url : urls) addRom(QFileInfo{ url.toLocalFile() });
     }

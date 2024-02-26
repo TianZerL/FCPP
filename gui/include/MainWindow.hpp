@@ -26,6 +26,7 @@ private:
     void connect();
     void addRom(const QFileInfo& fileInfo);
     void runRom(const QModelIndex& index);
+    void runRom(const QString& name);
     void scanRoms(const QString& path);
     void saveRomList();
     void loadRomList();
