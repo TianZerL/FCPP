@@ -1,3 +1,4 @@
+#include <atomic>
 #include <cstring>
 #include <string>
 #include <utility>
@@ -9,7 +10,6 @@
 #include "FCPP/IO/Video.hpp"
 #include "FCPP/IO/RayLib/RayLibController.hpp"
 #include "FCPP/Util/LoopCounter.hpp"
-#include "FCPP/Util/Semaphore.hpp"
 
 namespace fcpp::io::detail
 {
@@ -546,8 +546,8 @@ namespace fcpp::io::detail
 
         AudioStream stream{};
         std::size_t writeCount = 0, readCount = 0;
+        std::atomic_int frames = 0;
         fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
-        fcpp::util::Semaphore sem{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
 
         static std::function<void(void*, unsigned int)> callbackFunc;
@@ -580,17 +580,20 @@ namespace fcpp::io::detail
     }
     void RayLibAudio::sendSample(const double sample) noexcept
     {
-        samples[writeIdx * buffSize + writeCount++] = static_cast<std::int16_t>(sample * 32767);
-        if (writeCount >= buffSize)
+        if (frames < buffNum)
         {
-            writeCount = 0;
-            ++writeIdx;
-            sem.acquire();
+            samples[writeIdx * buffSize + writeCount++] = static_cast<std::int16_t>(sample * 32767);
+            if (writeCount >= buffSize)
+            {
+                writeCount = 0;
+                ++writeIdx;
+                ++frames;
+            }
         }
     }
     void RayLibAudio::fillBuffer(void* const buffer, const unsigned int len) noexcept
     {
-        if (sem.value() < buffNum - 1)
+        if (frames)
         {
             if ((readIdx == (buffNum - 1)) && (buffSize - readCount < len)) // Last buffer
             {
@@ -603,7 +606,7 @@ namespace fcpp::io::detail
             {
                 readCount -= buffSize;
                 ++readIdx;
-                sem.release();
+                --frames;
             }
         }
         else std::memset(buffer, 0, len * sizeof(std::int16_t));

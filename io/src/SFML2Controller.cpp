@@ -1,3 +1,4 @@
+#include <atomic>
 #include <cstring>
 #include <utility>
 
@@ -10,7 +11,6 @@
 #include "FCPP/IO/Video.hpp"
 #include "FCPP/IO/SFML2/SFML2Controller.hpp"
 #include "FCPP/Util/LoopCounter.hpp"
-#include "FCPP/Util/Semaphore.hpp"
 
 namespace fcpp::io::detail
 {
@@ -504,8 +504,8 @@ namespace fcpp::io::detail
         static constexpr std::size_t buffNum = 6;
 
         std::size_t count = 0;
+        std::atomic_int frames = 0;
         fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
-        fcpp::util::Semaphore sem{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
     };
     void SFML2Audio::create() noexcept
@@ -519,22 +519,25 @@ namespace fcpp::io::detail
     }
     void SFML2Audio::sendSample(const double sample) noexcept
     {
-        samples[writeIdx * buffSize + count++] = static_cast<std::int16_t>(sample * 32767);
-        if (count >= buffSize)
+        if (frames < buffNum)
         {
-            count = 0;
-            ++writeIdx;
-            sem.acquire();
+            samples[writeIdx * buffSize + count++] = static_cast<std::int16_t>(sample * 32767);
+            if (count >= buffSize)
+            {
+                count = 0;
+                ++writeIdx;
+                ++frames;
+            }
         }
     }
     bool SFML2Audio::onGetData(Chunk& data) noexcept
     {
-        if (sem.value() < buffNum - 1)
+        if (frames)
         {
             data.samples = samples + readIdx * buffSize;
             data.sampleCount = buffSize;
             ++readIdx;
-            sem.release();
+            --frames;
         }
         else
         {

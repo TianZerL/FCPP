@@ -1,3 +1,4 @@
+#include <atomic>
 #include <cstring>
 #include <string>
 #include <utility>
@@ -632,11 +633,11 @@ namespace fcpp::io::detail
     private:
         static constexpr std::size_t buffSize = 1024;
         static constexpr std::size_t buffNum = 6;
-        SDL_semaphore* sem = nullptr;
-        SDL_AudioDeviceID devid = 0;
 
+        SDL_AudioDeviceID devid = 0;
         double volume = 1.0;
         std::size_t count = 0;
+        std::atomic_int frames = 0;
         fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
     };
@@ -647,20 +648,9 @@ namespace fcpp::io::detail
             SDL_PauseAudioDevice(devid, 1);
             SDL_CloseAudioDevice(devid);
         }
-        if (sem != nullptr) SDL_DestroySemaphore(sem);
     }
     bool SDL2Audio::create() noexcept
     {
-        if (sem == nullptr)
-        {
-            sem = SDL_CreateSemaphore(buffNum - 1);
-            if (sem == nullptr)
-            {
-                SDL_Log("SDL_CreateSemaphore Error: %s\n", SDL_GetError());
-                return false;
-            }
-        }
-
         if (devid == 0)
         {
             SDL_AudioSpec want{};
@@ -689,21 +679,24 @@ namespace fcpp::io::detail
     }
     void SDL2Audio::sendSample(const double sample) noexcept
     {
-        samples[writeIdx * buffSize + count++] = static_cast<std::int16_t>(sample * 32767 * volume);
-        if (count >= buffSize)
+        if (frames < buffNum)
         {
-            count = 0;
-            ++writeIdx;
-            SDL_SemWait(sem);
+            samples[writeIdx * buffSize + count++] = static_cast<std::int16_t>(sample * 32767 * volume);
+            if (count >= buffSize)
+            {
+                count = 0;
+                ++writeIdx;
+                ++frames;
+            }
         }
     }
     void SDL2Audio::fillBuffer(std::uint8_t* const buffer, const int len) noexcept
     {
-        if (SDL_SemValue(sem) < buffNum - 1)
+        if (frames)
         {
             SDL_memcpy(buffer, samples + readIdx * buffSize, len);
             ++readIdx;
-            SDL_SemPost(sem);
+            --frames;
         }
         else SDL_memset(buffer, 0, len);
     }
