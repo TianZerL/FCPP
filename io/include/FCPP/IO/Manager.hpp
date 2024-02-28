@@ -5,9 +5,7 @@
 
 #include <FCPPIOExport.hpp>
 
-#include "FCPP/IO/RayLib/RayLibController.hpp"
-#include "FCPP/IO/SDL2/SDL2Controller.hpp"
-#include "FCPP/IO/SFML2/SFML2Controller.hpp"
+#include "FCPP/IO/Controller.hpp"
 
 namespace fcpp::io::manager
 {

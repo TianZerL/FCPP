@@ -1,5 +1,15 @@
 #include "FCPP/IO/Manager.hpp"
 
+#ifdef FCPP_IO_SDL2
+#include "FCPP/IO/SDL2/SDL2Controller.hpp"
+#endif
+#ifdef FCPP_IO_SFML2
+#include "FCPP/IO/SFML2/SFML2Controller.hpp"
+#endif
+#ifdef FCPP_IO_RAYLIB
+#include "FCPP/IO/RayLib/RayLibController.hpp"
+#endif
+
 int fcpp::io::manager::count() noexcept
 {
     int counter = 0;

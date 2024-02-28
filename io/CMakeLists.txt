@@ -13,6 +13,7 @@ target_sources(fcpp_io PRIVATE
 
 target_include_directories(fcpp_io PUBLIC
     $<BUILD_INTERFACE:${TOP_DIR}/io/include>
+    $<BUILD_INTERFACE:${TOP_DIR}/core/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:fcpp_io/include>
 )
@@ -24,9 +25,6 @@ target_compile_definitions(fcpp_io PUBLIC
 fcpp_check_disable_flags(fcpp_io)
 
 if(FCPP_IO_WITH_SFML2 OR FCPP_IO_WITH_SDL2 OR FCPP_IO_WITH_RAYLIB)
-    target_include_directories(fcpp_io PUBLIC
-        $<BUILD_INTERFACE:${TOP_DIR}/core/include>
-    )
     target_link_libraries(fcpp_io PRIVATE fcpp_util)
 
     if(FCPP_IO_WITH_SFML2)
