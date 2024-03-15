@@ -256,6 +256,7 @@ void MainWindow::on_action_about_triggered()
         "   FCPP (v" FCPP_VERSION_STR ")\n"
         "   FCPP_IO (v" FCPP_IO_VERSION_STR ")\n"
         "   Qt (v" QT_VERSION_STR ")\n\n"
-        "Copyright (c) by TianZerL the FCPP project 2022-\n\n"
+        "Built by: " QFCPP_COMPILER_ID " (v" QFCPP_COMPILER_VERSION ")\n\n"
+        "Copyright (c) by TianZerL the FCPP project 2022-" QFCPP_BUILD_YEAR "\n\n"
         "The emulator is for educational and development purposes only");
 }

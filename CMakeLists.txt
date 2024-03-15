@@ -15,7 +15,8 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build Type" FORCE)
 endif()
 
-string(TIMESTAMP TODAY "%Y-%m-%d")
+string(TIMESTAMP DATE_TODAY "%Y-%m-%d")
+string(TIMESTAMP DATE_YEAR "%Y")
 
 option(FCPP_SHARED_LIB "build to shared library" OFF)
 option(FCPP_IO_WITH_SFML2 "build fcpp io lib with sfml2" OFF)
