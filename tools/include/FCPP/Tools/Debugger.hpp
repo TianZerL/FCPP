@@ -27,10 +27,10 @@ public:
         DataView() = default;
         DataView(const DataType* const data, const int size) noexcept : ptr(data), length(size) {}
         const DataType* data() const noexcept { return ptr; }
-        const int size() const noexcept { return length; }
+        int size() const noexcept { return length; }
     private:
-        int length = 0;
         const DataType* ptr = nullptr;
+        int length = 0;
     };
     class PatternTableView : public DataView<std::uint32_t>
     {

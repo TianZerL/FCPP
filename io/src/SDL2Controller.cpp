@@ -637,7 +637,7 @@ namespace fcpp::io::detail
         SDL_AudioDeviceID devid = 0;
         double volume = 1.0;
         std::size_t count = 0;
-        std::atomic_int frames = 0;
+        std::atomic_size_t frames = 0;
         fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
     };

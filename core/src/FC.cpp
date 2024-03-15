@@ -49,7 +49,8 @@ bool fcpp::core::FC::insertCartridge(INES&& content)
 
 void fcpp::core::FC::connect(const int idx, InputScanner* const inputScanner) noexcept
 {
-    if (idx < (sizeof(dptr->joypad) / sizeof(dptr->joypad[0])))
+    int length = sizeof(dptr->joypad) / sizeof(dptr->joypad[0]);
+    if (idx < length)
     {
         if (inputScanner != nullptr)
         {
@@ -145,5 +146,6 @@ fcpp::core::Cartridge* fcpp::core::FC::getCartridge() noexcept
 }
 fcpp::core::Joypad* fcpp::core::FC::getJoypad(const int idx) noexcept
 {
-    return idx < (sizeof(dptr->joypad) / sizeof(dptr->joypad[0])) ? dptr->joypad[idx].get() : nullptr;
+    int length = sizeof(dptr->joypad) / sizeof(dptr->joypad[0]);
+    return idx < length ? dptr->joypad[idx].get() : nullptr;
 }

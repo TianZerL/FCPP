@@ -70,7 +70,7 @@ FCPP can be compiled to WebAssembly, [try it in your browser!](https://tianzerl.
 Build in KUbuntu21.10 with Qt5 and use the default CMake option:
 ```shell
 # Install Qt5 and SDL2
-sudo apt-get install qtbase5-dev qtbase5-dev-tools libsdl2-dev
+sudo apt-get install qtbase5-dev qtbase5-dev-tools qttools5-dev libsdl2-dev
 # Enter the FCPP root directory and prepare to build
 cd FCPP && mkdir build && cd build
 # Do cmake

@@ -312,7 +312,7 @@ fcpp::tools::Debugger::MemoryView fcpp::tools::Debugger::getPRamView() const noe
 }
 fcpp::tools::Debugger::CPUView fcpp::tools::Debugger::getCPUView() const noexcept
 {
-    return CPUView{ &dptr->instruction, &dptr->registers, [this](CPUView& view) {
+    return CPUView{ &dptr->instruction, &dptr->registers, [this](CPUView& /* view */) {
             dptr->registers = dptr->cpu->dump();
             dptr->instruction = detail::instructionDecode(dptr->bus->read<fcpp::core::CPU>(dptr->registers.pc));
         }

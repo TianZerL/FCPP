@@ -208,13 +208,13 @@ namespace fcpp::core::detail
         {
             struct Sprite
             {
-                std::uint8_t id = 0;     // Index in OAM.
-                std::uint8_t x = 0;      // X position.
-                std::uint8_t y = 0;      // Y position.
-                std::uint8_t tile = 0;   // Tile index.
-                std::uint8_t attr = 0;   // Attributes.
-                std::uint8_t spL = 0;    // Tile data (low).
-                std::uint8_t spH = 0;    // Tile data (high).
+                std::uint8_t id;     // Index in OAM.
+                std::uint8_t x;      // X position.
+                std::uint8_t y;      // Y position.
+                std::uint8_t tile;   // Tile index.
+                std::uint8_t attr;   // Attributes.
+                std::uint8_t spL;    // Tile data (low).
+                std::uint8_t spH;    // Tile data (high).
             };
 
             std::uint8_t mem[0x100];     // VRAM for sprite properties.

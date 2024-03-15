@@ -71,7 +71,7 @@ FCPP可以编译为WebAssembly，[在浏览器中尝试!](https://tianzerl.githu
 
 ```shell
 # 安装Qt5和SDL2
-sudo apt-get install qtbase5-dev qtbase5-dev-tools libsdl2-dev
+sudo apt-get install qtbase5-dev qtbase5-dev-tools qttools5-dev libsdl2-dev
 # 进入FCPP根目录，准备构建
 cd FCPP && mkdir build && cd build
 # 执行cmake

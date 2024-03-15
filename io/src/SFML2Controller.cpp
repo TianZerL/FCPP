@@ -504,7 +504,7 @@ namespace fcpp::io::detail
         static constexpr std::size_t buffNum = 6;
 
         std::size_t count = 0;
-        std::atomic_int frames = 0;
+        std::atomic_size_t frames = 0;
         fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
     };
@@ -548,7 +548,7 @@ namespace fcpp::io::detail
         }
         return true;
     }
-    void SFML2Audio::onSeek(const sf::Time timeOffset) noexcept
+    void SFML2Audio::onSeek(const sf::Time /* timeOffset */) noexcept
     {
         return;
     }
@@ -597,13 +597,13 @@ bool fcpp::io::SFML2Controller::setVerticalSync(const bool enable) noexcept
 {
     return dptr->video.setVerticalSync(enable);
 }
-bool fcpp::io::SFML2Controller::setRenderDriver(const int idx) noexcept
+bool fcpp::io::SFML2Controller::setRenderDriver(const int /* idx */) noexcept
 {
     return true;
 }
 bool fcpp::io::SFML2Controller::setJoystickPort(const int idx, const int port) noexcept
 {
-    return dptr->input[idx].setJoystickPort(idx);
+    return dptr->input[idx].setJoystickPort(port);
 }
 void fcpp::io::SFML2Controller::setScale(const float factor) noexcept
 {
@@ -678,7 +678,7 @@ int fcpp::io::SFML2Controller::Info::getRenderDriverCount() noexcept
 {
     return 1;
 }
-const char* fcpp::io::SFML2Controller::Info::getRenderDriverName(const int idx) noexcept
+const char* fcpp::io::SFML2Controller::Info::getRenderDriverName(const int /* idx */) noexcept
 {
     return "opengl";
 }

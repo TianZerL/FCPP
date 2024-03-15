@@ -303,7 +303,7 @@ namespace fcpp::core::detail
         std::uint32_t bank = bankSelect * 0x2000 + (addr & 0x1fff);
         return content->readCHR(bank);
     }
-    void Mapper3::writeCHR(const std::uint16_t addr, const std::uint8_t data) noexcept { /*not allowed*/ }
+    void Mapper3::writeCHR(const std::uint16_t /* addr */, const std::uint8_t /* data */) noexcept { /*not allowed*/ }
     void Mapper3::save(Snapshot::Writer& writer) noexcept
     {
         writer.access(bankSelect);
@@ -579,7 +579,7 @@ namespace fcpp::core::detail
 
         return content->readCHR(bank);
     }
-    void Mapper9::writeCHR(const std::uint16_t addr, const std::uint8_t data) noexcept { /*not allowed*/ }
+    void Mapper9::writeCHR(const std::uint16_t /* addr */, const std::uint8_t /* data */) noexcept { /*not allowed*/ }
     MirrorType Mapper9::getMirrorType() noexcept
     {
         return mirrorType;
@@ -679,7 +679,7 @@ namespace fcpp::core::detail
     {
         return content->readCHR((bankSelect >> 4) * 0x2000 + (addr & 0x1fff));
     }
-    void Mapper11::writeCHR(const std::uint16_t addr, const std::uint8_t data) noexcept { /*not allowed*/ }
+    void Mapper11::writeCHR(const std::uint16_t /* addr */, const std::uint8_t /* data */) noexcept { /*not allowed*/ }
     void Mapper11::save(Snapshot::Writer& writer) noexcept
     {
         writer.access(bankSelect);

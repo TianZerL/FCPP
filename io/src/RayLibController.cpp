@@ -233,7 +233,6 @@ namespace fcpp::io::detail
         bool setFullScreen(bool enable) noexcept;
         bool setBorderless(bool enable) noexcept;
         bool setVerticalSync(bool enable) noexcept;
-        bool setRenderDriver(int idx) noexcept;
         void setScale(double factor) noexcept;
         void setTitle(const char* text) noexcept;
         void setFrameBufferData(const std::uint8_t* data) noexcept;
@@ -363,10 +362,6 @@ namespace fcpp::io::detail
             else if (!enable && IsWindowState(FLAG_VSYNC_HINT)) ClearWindowState(FLAG_VSYNC_HINT);
             return enable == IsWindowState(FLAG_VSYNC_HINT);
         }
-        return true;
-    }
-    bool RayLibVideo::setRenderDriver(const int idx) noexcept
-    {
         return true;
     }
     void RayLibVideo::setScale(const double factor) noexcept
@@ -546,7 +541,7 @@ namespace fcpp::io::detail
 
         AudioStream stream{};
         std::size_t writeCount = 0, readCount = 0;
-        std::atomic_int frames = 0;
+        std::atomic_size_t frames = 0;
         fcpp::util::LoopCounter<std::size_t> readIdx{ buffNum - 1 }, writeIdx{ buffNum - 1 };
         std::int16_t samples[buffSize * buffNum]{};
 
@@ -660,13 +655,13 @@ bool fcpp::io::RayLibController::setVerticalSync(const bool enable) noexcept
 {
     return dptr->video.setVerticalSync(enable);
 }
-bool fcpp::io::RayLibController::setRenderDriver(const int idx) noexcept
+bool fcpp::io::RayLibController::setRenderDriver(const int /* idx */) noexcept
 {
     return true;
 }
 bool fcpp::io::RayLibController::setJoystickPort(const int idx, const int port) noexcept
 {
-    return dptr->input[idx].setJoystickPort(idx);
+    return dptr->input[idx].setJoystickPort(port);
 }
 void fcpp::io::RayLibController::setScale(const float factor) noexcept
 {
@@ -741,7 +736,7 @@ int fcpp::io::RayLibController::Info::getRenderDriverCount() noexcept
 {
     return 1;
 }
-const char* fcpp::io::RayLibController::Info::getRenderDriverName(const int idx) noexcept
+const char* fcpp::io::RayLibController::Info::getRenderDriverName(const int /* idx */) noexcept
 {
     return "opengl";
 }

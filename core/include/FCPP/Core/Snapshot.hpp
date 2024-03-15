@@ -84,7 +84,7 @@ private:
 template <typename Integer, std::enable_if_t<std::is_integral_v<Integer>>*>
 inline void fcpp::core::Snapshot::Writer::access(const Integer data) noexcept
 {
-    for (int i = 0; i < sizeof(Integer); i++) access(static_cast<std::uint8_t>((data >> (8 * i)) & 0xff));
+    for (std::size_t i = 0; i < sizeof(Integer); i++) access(static_cast<std::uint8_t>((data >> (8 * i)) & 0xff));
 }
 template <typename Register, typename Integer, std::enable_if_t<std::is_class_v<Register>>*>
 inline void fcpp::core::Snapshot::Writer::access(const Register& data) noexcept
@@ -102,7 +102,7 @@ inline void fcpp::core::Snapshot::Reader::access(Integer& data) const noexcept
 {
     data = 0;
     std::uint8_t value = 0;
-    for (int i = 0; i < sizeof(Integer); i++)
+    for (std::size_t i = 0; i < sizeof(Integer); i++)
     {
         access(value);
         data |= (static_cast<Integer>(value) << (8 * i));

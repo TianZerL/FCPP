@@ -11,7 +11,7 @@ struct TestIO :
     TestIO() = default;
     ~TestIO() override = default;
 
-    void setPixel(int x, int y, std::uint32_t color) noexcept override {}
+    void setPixel(int /* x */, int /* y */, std::uint32_t /* color */) noexcept override {}
     void completedSignal() noexcept override
     {
         frames += 1000.0;
@@ -28,7 +28,7 @@ struct TestIO :
         return nullptr;
     }
 
-    void sendSample(double sample) noexcept override {}
+    void sendSample(double /* sample */) noexcept override {}
     int getSampleRate() noexcept override
     {
         return 44100;
