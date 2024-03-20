@@ -23,7 +23,7 @@ target_compile_definitions(efcpp PRIVATE
 
 if(EMSCRIPTEN)
     target_compile_options(efcpp PRIVATE -sUSE_SDL=2)
-    target_link_options(efcpp PUBLIC -sUSE_SDL=2 "SHELL:--preload-file ${TOP_DIR}/images@images")
+    target_link_options(efcpp PUBLIC -sUSE_SDL=2 "SHELL:--preload-file ${TOP_DIR}/images/joypad@images/joypad")
 else()
     target_link_libraries(efcpp PRIVATE
         SDL2::SDL2
