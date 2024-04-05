@@ -59,6 +59,7 @@ FCPP can be compiled to WebAssembly, [try it in your browser!](https://tianzerl.
 | FCPP_BUILD_C_BINDING      | Build C binding               | OFF     |
 | FCPP_BUILD_PYTHON_BINDING | Build Python binding          | OFF     |
 | FCPP_BUILD_WASM           | Build libefcpp for wasm       | OFF     |
+| FCPP_BUILD_TOOLS          | Build libfcpp_tools           | OFF     |
 | FCPP_LTO                  | Enable Link time optimization | OFF     |
 ## Examples
 ### Windows (MSVC)

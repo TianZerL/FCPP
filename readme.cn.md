@@ -59,6 +59,7 @@ FCPP可以编译为WebAssembly，[在浏览器中尝试!](https://tianzerl.githu
 | FCPP_BUILD_C_BINDING      | 编译C语言绑定        | OFF    |
 | FCPP_BUILD_PYTHON_BINDING | 编译Python绑定       | OFF    |
 | FCPP_BUILD_WASM           | 编译wasm相关库       | OFF    |
+| FCPP_BUILD_TOOLS          | 编译fcpp_tools库     | OFF    |
 | FCPP_LTO                  | 开启链接时优化       | OFF    |
 ## 构建示例
 ### Windows（MSVC）
