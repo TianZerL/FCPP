@@ -89,7 +89,7 @@ make install
 # 进入FCPP根目录，准备构建
 cd FCPP && mkdir build_wasm && cd build_wasm
 # 执行cmake
-emcmake cmake .. -DFCPP_EMSCRIPTEN_PRESET=ON -DROM_PATH="/rom/文件/路径"
+emcmake cmake .. -DFCPP_PRESET_EMSCRIPTEN=ON -DROM_PATH="/rom/文件/路径"
 # 构建
 emmake make
 # 开启一个http服务器以在浏览器上运行

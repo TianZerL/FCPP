@@ -88,7 +88,7 @@ No extra dependency is required, just download emsdk and build it:
 # Enter the FCPP root directory and prepare to build
 cd FCPP && mkdir build_wasm && cd build_wasm
 # Do cmake
-emcmake cmake .. -DFCPP_EMSCRIPTEN_PRESET=ON -DROM_PATH="/path/to/your/rom/file"
+emcmake cmake .. -DFCPP_PRESET_EMSCRIPTEN=ON -DROM_PATH="/path/to/your/rom/file"
 # Building
 emmake make
 # launch a http server to run it on your browser
