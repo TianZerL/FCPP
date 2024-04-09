@@ -1,40 +1,23 @@
-#include <iostream>
-#include <iomanip>
-#include <string>
-#include <sstream>
+#include <cstdio>
+
+#include <SDL_scancode.h>
 
 #include "FCPP/Core.hpp"
-#include "FCPP/IO.hpp"
 #include "FCPP/Tools.hpp"
 
-#define SDL_MAIN_HANDLED
-#include <SDL.h>
+#include "IO.hpp"
 
-class PatternTabWindow
+static void dumpMemory(const fcpp::tools::Debugger::MemoryView& memoryView, FILE* stream = stdout)
 {
-public:
-    ~PatternTabWindow() noexcept;
-    bool create(const std::uint32_t* buffer) noexcept;
-    void render() noexcept;
-private:
-    SDL_Window* window = nullptr;
-    SDL_Renderer* renderer = nullptr;
-    SDL_Texture* texture = nullptr;
-    const std::uint32_t* frameBuffer = nullptr;
-};
-
-static void dumpMemory(const fcpp::tools::Debugger::MemoryView& memoryView)
-{
-    int cols = 32;
+    int cols = 16;
     int rows = memoryView.size() / cols;
     const std::uint8_t* ptr = memoryView.data();
-    std::cout.fill('0');
-    std::cout << std::dec << memoryView.size() << "B Memory: \n";
-    std::cout << std::hex << std::uppercase;
+    std::fprintf(stream, "%dB Memory: \n      00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f\n", memoryView.size());
     for (int i = 0; i < rows; i++)
     {
-        for (int j = 0; j < cols; j++) std::cout << std::setw(2) << +ptr[i * cols + j] << ' ';
-        std::cout << '\n';
+        std::fprintf(stream, "%04x  ", i * 16);
+        for (int j = 0; j < cols; j++) std::fprintf(stream, "%02X ", ptr[i * cols + j]);
+        std::putchar('\n');
     }
 }
 
@@ -45,122 +28,65 @@ int main(int argc, char* argv[])
 
     if (!fc.insertCartridge(argc > 1 ? argv[argc - 1] : TEST_ROM_LOAD_PATH))
     {
-        std::cerr << "Failed to load rom" << std::endl;
+        std::fprintf(stderr, "Failed to load rom.");
         return 0;
     }
-    auto controller = fcpp::io::manager::create(0);
-    controller->setTitle("fcpp");
-    controller->setVerticalSync(true);
-    controller->setScale(2.0);
 
-    PatternTabWindow debugWindow{};
+    char textBuffer[128 + 1] = {};
+    bool stop = false, pause = false;
 
     debugger.connect(&fc);
     auto cpuView = debugger.getCPUView();
     auto patternTableView = debugger.getPatternTableView();
-    controller->setRenderCallback([&]() {
-        patternTableView.update();
-        auto& registers = cpuView.registers();
-        std::ostringstream oss{};
-        oss << std::hex << std::uppercase
-            << "  a: $" << +registers.a << " x: $" << +registers.x << " y: $" << +registers.y
-            << " sp: $" << +registers.sp << " p: $" << +registers.p << " pc: $" << +registers.pc
-            << "  " << cpuView.instruction();
-        controller->setTitle(oss.str().c_str());
-        debugWindow.render();
-        });
-
-    bool close = false;
     auto ramView = debugger.getRamView();
     auto vramView = debugger.getVRamView();
     auto pramView = debugger.getPRamView();
-    controller->setKeyPressCallback([&](fcpp::io::Keyboard key) {
+
+    fc.connect(0, gIO.getInputScanner());
+    fc.connect(gIO.getSampleBuffer());
+    fc.connect(gIO.getFrameBuffer(patternTableView.data(), 
+    [&](int key) {
         switch (key)
         {
-        case fcpp::io::Keyboard::Q:
-            close = true;
+        case SDL_SCANCODE_ESCAPE:
+            stop = true;
             break;
-        case fcpp::io::Keyboard::R:
+        case SDL_SCANCODE_F1:
             dumpMemory(ramView);
             break;
-        case fcpp::io::Keyboard::V:
+        case SDL_SCANCODE_F2:
             dumpMemory(vramView);
             break;
-        case fcpp::io::Keyboard::P:
+        case SDL_SCANCODE_F3:
             dumpMemory(pramView);
+            break;
+        case SDL_SCANCODE_F4:
+            pause = !pause;
             break;
         default:
             break;
         }
-        });
-    if (!controller->create())
-    {
-        std::cerr << "Failed to create controller" << std::endl;
-        return 0;
-    }
-    debugWindow.create(patternTableView.data());
-
-    fc.connect(0, controller->getInputScanner(0));
-    fc.connect(controller->getSampleBuffer());
-    fc.connect(controller->getFrameBuffer());
+    },
+    [&](const char** text) {
+        patternTableView.update();
+        auto& registers = cpuView.registers();
+        std::snprintf(textBuffer, sizeof(textBuffer),
+            "a: $%02X  x: $%02X  y: $%02X  sp: $%02X  p: $%02X\npc: $%04X  %s",
+            registers.a, registers.x, registers.y, registers.sp, registers.p,
+            registers.pc, cpuView.instruction());
+        *text = textBuffer;
+        },
+    [&]() {
+        stop = true;
+    }));
     fc.powerOn();
 
-    while (!close)
+    while (!stop)
     {
         cpuView.update();
-        fc.exec();
+        if (!pause) fc.exec();
+        else gIO.update();
     }
 
     return 0;
-}
-
-PatternTabWindow::~PatternTabWindow() noexcept
-{
-    if (texture != nullptr) SDL_DestroyTexture(texture);
-    if (renderer != nullptr) SDL_DestroyRenderer(renderer);
-    if (window != nullptr) SDL_DestroyWindow(window);
-}
-
-bool PatternTabWindow::create(const std::uint32_t* const buffer) noexcept
-{
-    if (window == nullptr)
-    {
-        window = SDL_CreateWindow("debugger", 64, 64,
-            fcpp::tools::Debugger::PatternTableView::pageWidth * 3,
-            fcpp::tools::Debugger::PatternTableView::pageHeight * fcpp::tools::Debugger::PatternTableView::pageCount * 3,
-            SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-        if (window == nullptr)
-        {
-            SDL_Log("SDL_CreateWindow Error: %s\n", SDL_GetError());
-            return false;
-        }
-    }
-    if (renderer == nullptr)
-    {
-        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-        if (renderer == nullptr)
-        {
-            SDL_Log("SDL_CreateRenderer Error: %s\n", SDL_GetError());
-            return false;
-        }
-    }
-    if (texture == nullptr)
-    {
-        texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
-            fcpp::tools::Debugger::PatternTableView::pageWidth,
-            fcpp::tools::Debugger::PatternTableView::pageHeight * fcpp::tools::Debugger::PatternTableView::pageCount);
-        if (texture == nullptr)
-        {
-            SDL_Log("SDL_CreateTexture Error: %s\n", SDL_GetError());
-            return false;
-        }
-    }
-    frameBuffer = buffer;
-    return true;
-}
-void PatternTabWindow::render() noexcept
-{
-    if (SDL_UpdateTexture(texture, nullptr, frameBuffer, 128 * sizeof(std::uint32_t)) != 0) SDL_Log("SDL_UpdateTexture Error: %s\n", SDL_GetError());
-    if (SDL_RenderCopy(renderer, texture, nullptr, nullptr) != 0) SDL_Log("SDL_RenderCopy Error: %s\n", SDL_GetError());
-    SDL_RenderPresent(renderer);
 }
